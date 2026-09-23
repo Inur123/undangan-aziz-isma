@@ -1908,6 +1908,16 @@
             max-height: 36px
         }
 
+        .wish-list .wish-message.is-expanded {
+            display: block;
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+            max-height: none;
+            overflow: visible;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere
+        }
+
         .wish-more {
             display: block;
             align-self: flex-start;
@@ -1921,63 +1931,6 @@
             text-decoration: underline;
             text-underline-offset: 3px;
             line-height: 22px
-        }
-
-        body.wish-open {
-            overflow: hidden
-        }
-
-        .wish-viewer {
-            padding: 29px 27px 27px;
-            border: 1px solid var(--line);
-            background: var(--paper);
-            color: var(--ink);
-            width: calc(100% - 44px);
-            max-width: 380px;
-            max-height: calc(100dvh - 60px);
-            overflow: auto
-        }
-
-        .wish-viewer::backdrop {
-            background: #272b21ba;
-            backdrop-filter: blur(4px)
-        }
-
-        .wish-viewer .viewer-control {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            width: 34px;
-            height: 34px;
-            color: var(--ink);
-            border-color: var(--line)
-        }
-
-        .wish-viewer .eyebrow {
-            font-size: 8px;
-            margin: 3px 35px 18px 0
-        }
-
-        .wish-viewer h3 {
-            font: 500 28px/1.2 var(--serif);
-            margin: 0 12px 9px 0;
-            overflow-wrap: anywhere
-        }
-
-        .wish-viewer .wish-badge {
-            font-size: 10px;
-            margin-bottom: 20px
-        }
-
-        .wish-viewer-message {
-            font-size: 13px;
-            line-height: 1.9;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-            max-height: 50dvh;
-            overflow: auto;
-            padding-top: 17px;
-            border-top: 1px solid var(--line)
         }
 
         @media(max-width:360px) {
@@ -2039,4 +1992,3 @@
                 margin-top: 31px
             }
         }
-    

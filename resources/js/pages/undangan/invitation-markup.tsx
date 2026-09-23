@@ -1,4 +1,11 @@
-import { type ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import {
+    type ReactNode,
+    type SyntheticEvent,
+    useId,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
 import {
     attendanceLabels,
     formatAccountNumber,
@@ -7,23 +14,32 @@ import {
     photos,
     type Wish,
 } from './invitation-data';
+import { dismissInvitationLoader } from './invitation-loader';
 import type { useInvitation } from './use-invitation';
 
-function WishCard({
-    wish,
-    onOpen,
-}: {
-    wish: Wish;
-    onOpen: (wish: Wish, trigger: HTMLButtonElement) => void;
-}) {
+function useJpegFallback(event: SyntheticEvent<HTMLImageElement>): void {
+    const image = event.currentTarget;
+    const source = image.getAttribute('src');
+
+    if (source?.endsWith('.webp')) {
+        image.src = `${source.slice(0, -5)}.jpg`;
+    }
+}
+
+function WishCard({ wish }: { wish: Wish }) {
+    const messageId = useId();
     const messageRef = useRef<HTMLParagraphElement>(null);
     const [showMore, setShowMore] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     useLayoutEffect(() => {
         const message = messageRef.current;
         if (!message) return;
-        const measure = () =>
-            setShowMore(message.scrollHeight > message.clientHeight + 1);
+        const measure = () => {
+            if (!isExpanded) {
+                setShowMore(message.scrollHeight > message.clientHeight + 1);
+            }
+        };
         measure();
         const observer =
             'ResizeObserver' in window ? new ResizeObserver(measure) : null;
@@ -34,7 +50,7 @@ function WishCard({
             observer?.disconnect();
             window.removeEventListener('resize', measure);
         };
-    }, [wish.message]);
+    }, [isExpanded, wish.message]);
 
     return (
         <article className="wish">
@@ -51,18 +67,27 @@ function WishCard({
                     </span>
                 </div>
             </div>
-            <p className="wish-message" ref={messageRef}>
+            <p
+                className={`wish-message${isExpanded ? ' is-expanded' : ''}`}
+                id={messageId}
+                ref={messageRef}
+            >
                 {wish.message}
             </p>
             <button
                 className="wish-more"
                 type="button"
                 hidden={!showMore}
-                aria-label={`Baca ucapan lengkap dari ${wish.name}`}
-                aria-haspopup="dialog"
-                onClick={(event) => onOpen(wish, event.currentTarget)}
+                aria-label={
+                    isExpanded
+                        ? `Tutup ucapan lengkap dari ${wish.name}`
+                        : `Baca ucapan lengkap dari ${wish.name}`
+                }
+                aria-expanded={isExpanded}
+                aria-controls={messageId}
+                onClick={() => setIsExpanded((expanded) => !expanded)}
             >
-                Baca lengkap
+                {isExpanded ? 'Tutup' : 'Baca lengkap'}
             </button>
         </article>
     );
@@ -2097,6 +2122,8 @@ export function InvitationMarkup({
                             height="1200"
                             fetchPriority="high"
                             src="/images/foto-mempelai/1.webp"
+                            onLoad={dismissInvitationLoader}
+                            onError={useJpegFallback}
                         />
                     </div>
                     <div className="cover-frame" aria-hidden="true"></div>
@@ -2322,6 +2349,7 @@ export function InvitationMarkup({
                                 height="1024"
                                 loading="lazy"
                                 src="/images/foto-mempelai/1.webp"
+                                onError={useJpegFallback}
                             />
                         </div>
                         <figcaption className="photo-caption">
@@ -2612,6 +2640,7 @@ export function InvitationMarkup({
                                         }
                                         loading="lazy"
                                         src={photo.src}
+                                        onError={useJpegFallback}
                                         alt={photo.alt}
                                     />
                                     <span className="gallery-caption">
@@ -2878,11 +2907,7 @@ export function InvitationMarkup({
                     >
                         {model.wishes.length ? (
                             model.wishes.map((wish) => (
-                                <WishCard
-                                    key={wish.id}
-                                    wish={wish}
-                                    onOpen={model.openWish}
-                                />
+                                <WishCard key={wish.id} wish={wish} />
                             ))
                         ) : (
                             <p className="empty-wishes">
@@ -2949,7 +2974,7 @@ export function InvitationMarkup({
             </main>
 
             <nav
-                className="bottom-nav"
+                className="bottom-nav has-gallery"
                 id="bottom-nav"
                 aria-label="Navigasi undangan"
                 hidden={model.coverPhase === 'closed'}
@@ -3067,38 +3092,10 @@ export function InvitationMarkup({
                 {model.toast}
             </div>
             <dialog
-                className="wish-viewer"
-                id="wish-viewer"
-                aria-labelledby="wish-viewer-name"
-                ref={model.wishDialogRef}
-                onClose={model.onWishClose}
-            >
-                <button
-                    className="viewer-control"
-                    id="wish-viewer-close"
-                    type="button"
-                    aria-label="Tutup ucapan"
-                    autoFocus
-                    onClick={model.closeWish}
-                >
-                    <svg className="icon" aria-hidden="true">
-                        <use href="#i-close" />
-                    </svg>
-                </button>
-                <p className="eyebrow">Doa dari yang terkasih</p>
-                <h3 id="wish-viewer-name">{model.selectedWish?.name}</h3>
-                <p className="wish-badge" id="wish-viewer-attendance">
-                    {model.selectedWish
-                        ? attendanceLabels[model.selectedWish.attendance]
-                        : ''}
-                </p>
-                <p className="wish-viewer-message" id="wish-viewer-message">
-                    {model.selectedWish?.message}
-                </p>
-            </dialog>
-            <dialog
                 className="photo-viewer"
                 id="photo-viewer"
+                role="dialog"
+                aria-modal="true"
                 aria-labelledby="photo-viewer-title"
                 ref={model.photoDialogRef}
                 onClose={model.onPhotoClose}
@@ -3138,6 +3135,7 @@ export function InvitationMarkup({
                         <img
                             id="viewer-image"
                             src={selectedPhoto?.src}
+                            onError={useJpegFallback}
                             alt={selectedPhoto?.alt || ''}
                             decoding="async"
                         />

@@ -76,6 +76,19 @@ function foldCalendarLine(line: string): string {
     return folded;
 }
 
+function showDialog(dialog: HTMLDialogElement): void {
+    if (typeof dialog.showModal === 'function') {
+        dialog.showModal();
+        return;
+    }
+
+    dialog.setAttribute('open', '');
+    document.body.classList.add('legacy-dialog');
+    requestAnimationFrame(() =>
+        dialog.querySelector<HTMLElement>('button')?.focus(),
+    );
+}
+
 export function useInvitation(
     guestName: string,
     initialWishes: Wish[],
@@ -85,9 +98,7 @@ export function useInvitation(
     const mainTitleRef = useRef<HTMLHeadingElement>(null);
     const openButtonRef = useRef<HTMLButtonElement>(null);
     const wishListRef = useRef<HTMLDivElement>(null);
-    const wishDialogRef = useRef<HTMLDialogElement>(null);
     const photoDialogRef = useRef<HTMLDialogElement>(null);
-    const wishTriggerRef = useRef<HTMLButtonElement | null>(null);
     const photoTriggerRef = useRef<HTMLButtonElement | null>(null);
     const touchStartRef = useRef<{ x: number; y: number } | null>(null);
     const coverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -106,7 +117,6 @@ export function useInvitation(
     const [wishes, setWishes] = useState(initialWishes);
     const [wishTotal, setWishTotal] = useState(initialTotal);
     const [wishListMaxHeight, setWishListMaxHeight] = useState<string>();
-    const [selectedWish, setSelectedWish] = useState<Wish | null>(null);
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
         null,
     );
@@ -135,6 +145,37 @@ export function useInvitation(
         document.body.classList.toggle('cover-open', coverPhase === 'closed');
         return () => document.body.classList.remove('cover-open');
     }, [coverPhase]);
+
+    useEffect(() => {
+        const updateViewportHeight = () => {
+            document.documentElement.style.setProperty(
+                '--invitation-vh',
+                `${window.innerHeight}px`,
+            );
+        };
+        updateViewportHeight();
+        window.addEventListener('resize', updateViewportHeight);
+
+        const flex = document.createElement('div');
+        const first = document.createElement('span');
+        const second = document.createElement('span');
+        flex.style.cssText =
+            'display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';
+        first.style.height = '1px';
+        second.style.height = '1px';
+        flex.append(first, second);
+        document.body.append(flex);
+        if (flex.scrollHeight !== 3) {
+            document.documentElement.classList.add('no-flex-gap');
+        }
+        flex.remove();
+
+        return () => {
+            window.removeEventListener('resize', updateViewportHeight);
+            document.documentElement.style.removeProperty('--invitation-vh');
+            document.documentElement.classList.remove('no-flex-gap');
+        };
+    }, []);
 
     useEffect(() => {
         setCountdown(getCountdown());
@@ -238,23 +279,11 @@ export function useInvitation(
 
     useEffect(() => {
         if (
-            selectedWish &&
-            wishDialogRef.current &&
-            !wishDialogRef.current.open
-        ) {
-            wishDialogRef.current.showModal();
-            document.body.classList.add('wish-open');
-            wishDialogRef.current.scrollTop = 0;
-        }
-    }, [selectedWish]);
-
-    useEffect(() => {
-        if (
             selectedPhotoIndex !== null &&
             photoDialogRef.current &&
-            !photoDialogRef.current.open
+            !photoDialogRef.current.hasAttribute('open')
         ) {
-            photoDialogRef.current.showModal();
+            showDialog(photoDialogRef.current);
             document.body.classList.add('gallery-open');
         }
     }, [selectedPhotoIndex]);
@@ -265,8 +294,8 @@ export function useInvitation(
             if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
             document.body.classList.remove(
                 'cover-open',
-                'wish-open',
                 'gallery-open',
+                'legacy-dialog',
             );
         },
         [],
@@ -275,7 +304,7 @@ export function useInvitation(
     const openInvitation = () => {
         if (coverPhase !== 'closed') return;
         setCoverPhase('exiting');
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        window.scrollTo(0, 0);
         void music.start();
         requestAnimationFrame(() =>
             mainTitleRef.current?.focus({ preventScroll: true }),
@@ -294,7 +323,7 @@ export function useInvitation(
         music.stop();
         setCoverPhase('closed');
         setActiveSection('beranda');
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        window.scrollTo(0, 0);
         requestAnimationFrame(() =>
             openButtonRef.current?.focus({ preventScroll: true }),
         );
@@ -380,28 +409,42 @@ export function useInvitation(
         });
     };
 
-    const openWish = (wish: Wish, trigger: HTMLButtonElement) => {
-        wishTriggerRef.current = trigger;
-        setSelectedWish(wish);
-    };
-    const closeWish = () => wishDialogRef.current?.close();
-    const onWishClose = () => {
-        document.body.classList.remove('wish-open');
-        setSelectedWish(null);
-        wishTriggerRef.current?.focus({ preventScroll: true });
-    };
-
     const openPhoto = (index: number, trigger: HTMLButtonElement) => {
         photoTriggerRef.current = trigger;
         setSelectedPhotoIndex(index);
     };
-    const closePhoto = () => photoDialogRef.current?.close();
+    const closePhoto = () => {
+        const dialog = photoDialogRef.current;
+        if (!dialog) return;
+        if (typeof dialog.close === 'function') {
+            dialog.close();
+        } else {
+            dialog.removeAttribute('open');
+            onPhotoClose();
+        }
+    };
     const onPhotoClose = () => {
-        document.body.classList.remove('gallery-open');
+        document.body.classList.remove('gallery-open', 'legacy-dialog');
         setSelectedPhotoIndex(null);
         photoTriggerRef.current?.focus({ preventScroll: true });
         touchStartRef.current = null;
     };
+    useEffect(() => {
+        const onEscape = (event: KeyboardEvent) => {
+            if (event.key !== 'Escape') return;
+            const photoDialog = photoDialogRef.current;
+            if (
+                photoDialog?.hasAttribute('open') &&
+                typeof photoDialog.close !== 'function'
+            ) {
+                event.preventDefault();
+                photoDialog.removeAttribute('open');
+                onPhotoClose();
+            }
+        };
+        document.addEventListener('keydown', onEscape);
+        return () => document.removeEventListener('keydown', onEscape);
+    }, []);
     const shiftPhoto = (direction: number) =>
         setSelectedPhotoIndex((current) =>
             current === null
@@ -481,7 +524,6 @@ export function useInvitation(
         mainTitleRef,
         openButtonRef,
         wishListRef,
-        wishDialogRef,
         photoDialogRef,
         coverPhase,
         activeSection,
@@ -489,7 +531,6 @@ export function useInvitation(
         wishes,
         wishTotal,
         wishListMaxHeight,
-        selectedWish,
         selectedPhotoIndex,
         formStatus,
         toast,
@@ -499,9 +540,6 @@ export function useInvitation(
         backToCover,
         saveDate,
         submitWish,
-        openWish,
-        closeWish,
-        onWishClose,
         openPhoto,
         closePhoto,
         onPhotoClose,

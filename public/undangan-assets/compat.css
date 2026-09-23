@@ -1,0 +1,215 @@
+/* Fallbacks for older Safari and Android WebView. Current browsers keep style.css. */
+.bottom-nav.has-gallery {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.bottom-nav.has-gallery a {
+    flex: 1;
+    min-width: 0;
+    padding: 5px 2px;
+}
+
+.bottom-nav {
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.photo-viewer:not([open]) {
+    display: none;
+}
+
+body.legacy-dialog::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 199;
+    background: #141810d9;
+}
+
+body.legacy-dialog .photo-viewer {
+    display: block;
+    z-index: 201;
+}
+
+@supports not (inset: 0) {
+    body::before,
+    .page::after,
+    .cover-paper::after,
+    .cover,
+    .closing::before,
+    .cover-portrait::after,
+    .photo-viewer {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .cover-frame {
+        top: 23px;
+        right: 17px;
+        bottom: 20px;
+        left: 17px;
+    }
+
+    .cover-frame::after {
+        top: 6px;
+        right: 6px;
+        bottom: 6px;
+        left: 6px;
+    }
+
+    .event-card::after,
+    .gift-card::after {
+        top: 5px;
+        right: 5px;
+        bottom: 5px;
+        left: 5px;
+    }
+
+    .noscript-note {
+        top: auto;
+        right: 20px;
+        bottom: 15px;
+        left: 20px;
+    }
+
+    .gallery-image-wrap::after {
+        top: 50%;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+}
+
+@supports not (width: min(100%, 440px)) {
+    .cover,
+    .photo-viewer {
+        width: 100%;
+        max-width: 440px;
+    }
+
+    .ceremonial-divider {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .toast {
+        max-width: 85vw;
+    }
+}
+
+@supports not (height: 100dvh) {
+    .cover-paper {
+        min-height: var(--invitation-vh, 100vh);
+    }
+
+    .photo-viewer {
+        height: var(--invitation-vh, 100vh);
+    }
+}
+
+@supports not (aspect-ratio: 1 / 1) {
+    .gallery-image-wrap {
+        height: 0;
+        padding-top: 133.333%;
+    }
+
+    .gallery-tile.wide .gallery-image-wrap {
+        padding-top: 75%;
+    }
+
+    .gallery-tile:last-child .gallery-image-wrap {
+        padding-top: 62.5%;
+    }
+
+    .gallery-image-wrap img {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+@supports not (font-size: clamp(1px, 2vw, 3px)) {
+    .cover-title {
+        font: 400 55px/0.91 var(--serif);
+    }
+
+    @media (min-width: 350px) {
+        .cover-title {
+            font-size: 62px;
+        }
+    }
+
+    @media (min-width: 420px) {
+        .cover-title {
+            font-size: 70px;
+        }
+    }
+}
+
+@supports not (overflow: clip) {
+    .page {
+        overflow: hidden;
+    }
+}
+
+@supports not (bottom: max(1px, 2px)) {
+    .bottom-nav {
+        bottom: 14px;
+    }
+
+    .music-button {
+        right: 19px;
+    }
+
+    .viewer-layout {
+        padding: 21px 20px 23px;
+        padding-bottom: calc(23px + env(safe-area-inset-bottom));
+    }
+}
+
+.no-flex-gap .btn > * + *,
+.no-flex-gap .wish-head > * + * {
+    margin-left: 10px;
+}
+
+.no-flex-gap .scroll-cue > * + *,
+.no-flex-gap .viewer-control > * + * {
+    margin-left: 9px;
+}
+
+.no-flex-gap .back-cover > * + *,
+.no-flex-gap .gallery-hint > * + * {
+    margin-left: 7px;
+}
+
+.no-flex-gap .wish-scroll-hint > * + * {
+    margin-left: 6px;
+}
+
+.no-flex-gap .cover-date > * + * {
+    margin-left: 13px;
+}
+
+.no-flex-gap .divider > * + *,
+.no-flex-gap .viewer-toolbar > * + *,
+.no-flex-gap .gift-card-header > * + *,
+.no-flex-gap .wishes-summary > * + * {
+    margin-left: 15px;
+}
+
+.no-flex-gap .hero-date > * + * {
+    margin-left: 20px;
+}
+
+.no-flex-gap .viewer-pagination > * + * {
+    margin-left: 27px;
+}
+
+.no-flex-gap .bottom-nav a > * + * {
+    margin-top: 3px;
+}
