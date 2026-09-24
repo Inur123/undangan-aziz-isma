@@ -287,14 +287,12 @@
             margin: auto;
             overflow-y: auto;
             overflow-x: hidden;
-            background: var(--paper);
-            transition: opacity .8s, transform .9s cubic-bezier(.7, 0, .2, 1)
+            background: var(--paper)
         }
 
         .cover.exiting {
-            opacity: 0;
-            transform: translateY(-6%);
-            pointer-events: none
+            background: transparent;
+            overflow-y: hidden
         }
 
         .cover-paper {
@@ -1083,12 +1081,12 @@
         }
 
         .reveal {
-            transition: opacity .75s, transform .75s
+            transition: opacity .8s ease, transform 1s cubic-bezier(.2, .7, .2, 1)
         }
 
         .js-ready .reveal:not(.is-visible) {
             opacity: 0;
-            transform: translateY(18px)
+            transform: translateY(30px)
         }
 
         .symbols {
@@ -1991,4 +1989,339 @@
             .cover .cover-bottom {
                 margin-top: 31px
             }
+        }
+
+        /* Adegan pembuka memakai ulang ornamen SVG dan dilepas setelah selesai. */
+        .cover.exiting > .cover-paper {
+            visibility: hidden
+        }
+
+        .cover-opening {
+            position: absolute;
+            left: 0;
+            right: 0;
+            pointer-events: none
+        }
+
+        .cover-journey,
+        .cover-leaves {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            overflow: hidden
+        }
+
+        .cover-journey {
+            background: radial-gradient(ellipse at 50% 40%, var(--light), var(--paper) 70%)
+        }
+
+        .journey-frame {
+            position: absolute;
+            top: 5%;
+            right: 5%;
+            bottom: 5%;
+            left: 5%;
+            border: 1px solid var(--line);
+            border-radius: 220px 220px 0 0
+        }
+
+        .journey-gunungan {
+            position: absolute;
+            top: 15%;
+            left: 39%;
+            width: 22%;
+            height: 20%;
+            color: var(--gold)
+        }
+
+        .journey-pendopo {
+            position: absolute;
+            left: -15%;
+            bottom: 10%;
+            width: 130%;
+            height: 62%;
+            transform-origin: 50% 70%
+        }
+
+        .journey-foliage {
+            position: absolute;
+            bottom: 4%;
+            width: 28%;
+            height: 56%;
+            color: var(--gold)
+        }
+
+        .journey-foliage svg {
+            width: 100%;
+            height: 100%
+        }
+
+        .journey-foliage-left { left: -8% }
+        .journey-foliage-right { right: -8% }
+        .journey-foliage-right svg { transform: scaleX(-1) }
+
+        .cover-leaves {
+            perspective: 1100px
+        }
+
+        .cover-leaf {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--paper);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden
+        }
+
+        .cover-leaf > .cover-paper {
+            position: absolute;
+            top: var(--cover-scroll-offset, 0px);
+            width: 200%;
+            background: var(--paper)
+        }
+
+        .cover-leaf-left {
+            left: 0;
+            transform-origin: left center
+        }
+
+        .cover-leaf-right {
+            right: 0;
+            transform-origin: right center
+        }
+
+        .cover-leaf-right > .cover-paper {
+            left: -100%
+        }
+
+        .cover-leaf::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 35%;
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .cover-leaf-left::after {
+            right: 0;
+            background: linear-gradient(90deg, transparent, #493d2c38)
+        }
+
+        .cover-leaf-right::after {
+            left: 0;
+            background: linear-gradient(90deg, #493d2c38, transparent)
+        }
+
+        .cover-skip {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            min-height: 44px;
+            padding: 8px 14px;
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            background: var(--light);
+            color: var(--muted);
+            font-size: 11px;
+            pointer-events: auto
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .cover-leaf-left {
+                animation: invitation-open-left 1400ms cubic-bezier(.45, 0, .15, 1) both
+            }
+
+            .cover-leaf-right {
+                animation: invitation-open-right 1400ms cubic-bezier(.45, 0, .15, 1) both
+            }
+
+            .cover-leaf::after {
+                animation: invitation-paper-shade 1400ms ease both
+            }
+
+            .cover-journey {
+                animation: invitation-journey-end var(--cover-duration, 4200ms) linear both
+            }
+
+            .journey-frame {
+                animation: invitation-frame-pass var(--cover-duration, 4200ms) cubic-bezier(.3, .5, .25, 1) both
+            }
+
+            .journey-gunungan {
+                animation: invitation-gunungan-rise var(--cover-duration, 4200ms) ease both
+            }
+
+            .journey-pendopo {
+                animation: invitation-approach var(--cover-duration, 4200ms) cubic-bezier(.3, .5, .25, 1) both
+            }
+
+            .journey-foliage-left {
+                animation: invitation-foliage-left var(--cover-duration, 4200ms) ease both
+            }
+
+            .journey-foliage-right {
+                animation: invitation-foliage-right var(--cover-duration, 4200ms) ease both
+            }
+
+            .page.is-open .scroll-cue .icon {
+                animation: invitation-scroll-cue 1200ms ease-in-out 2200ms 3
+            }
+
+            .cover:not(.exiting) #open-invitation {
+                position: relative;
+                overflow: hidden
+            }
+
+            .cover:not(.exiting) #open-invitation::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: -60%;
+                width: 50%;
+                background: linear-gradient(90deg, transparent, #fcf9f238, transparent);
+                pointer-events: none;
+                animation: invitation-button-light 2600ms ease 1400ms 2
+            }
+
+            .js-ready .event-card.reveal:not(.is-visible) {
+                transform: perspective(900px) translateY(32px) rotateY(-9deg)
+            }
+
+            .js-ready .event-card.reveal:nth-of-type(even):not(.is-visible) {
+                transform: perspective(900px) translateY(32px) rotateY(9deg)
+            }
+
+            .js-ready .story-item.reveal:not(.is-visible) {
+                transform: translateX(30px)
+            }
+
+            .js-ready .gift-card.reveal:not(.is-visible) {
+                transform: translateY(28px) scale(.95)
+            }
+
+            .js-ready .reveal-photo:not(.is-visible) {
+                transform: translateY(32px) scale(.97)
+            }
+
+            .js-ready .reveal-photo.is-visible img {
+                transform-origin: center center;
+                animation: invitation-photo-drift 4200ms cubic-bezier(.2, .55, .3, 1) backwards
+            }
+
+            .js-ready .reveal.is-visible > .ornament-logo,
+            .js-ready .reveal.is-visible > .ceremonial-divider {
+                animation: invitation-ornament-unfold 1500ms cubic-bezier(.2, .7, .2, 1) backwards
+            }
+
+            .js-ready .reveal.is-visible > .person:first-child {
+                animation: invitation-person-left 1200ms ease 120ms backwards
+            }
+
+            .js-ready .reveal.is-visible > .person:nth-child(3) {
+                animation: invitation-person-right 1200ms ease 260ms backwards
+            }
+
+            .js-ready .closing.is-visible .ornament-logo {
+                animation: invitation-ornament-unfold 1500ms ease backwards
+            }
+
+            .js-ready .closing.is-visible .thank-you {
+                animation: invitation-detail-enter 1100ms ease 450ms backwards
+            }
+        }
+
+        @keyframes invitation-open-left {
+            0% { transform: rotateY(0); opacity: 1 }
+            75% { opacity: 1 }
+            100% { transform: rotateY(-105deg); opacity: 0 }
+        }
+
+        @keyframes invitation-open-right {
+            0% { transform: rotateY(0); opacity: 1 }
+            75% { opacity: 1 }
+            100% { transform: rotateY(105deg); opacity: 0 }
+        }
+
+        @keyframes invitation-journey-end {
+            0%, 76% { opacity: 1 }
+            100% { opacity: 0 }
+        }
+
+        @keyframes invitation-frame-pass {
+            0%, 18% { transform: scale(.88); opacity: .6 }
+            76% { opacity: 1 }
+            100% { transform: scale(1.24); opacity: 0 }
+        }
+
+        @keyframes invitation-gunungan-rise {
+            0%, 14% { transform: translateY(70%) scale(.8); opacity: 0 }
+            30%, 48% { transform: translateY(0) scale(1); opacity: 1 }
+            85%, 100% { transform: translateY(-100%) scale(1.2); opacity: 0 }
+        }
+
+        @keyframes invitation-approach {
+            0%, 12% { transform: translateY(8%) scale(.75); opacity: .45 }
+            34% { opacity: 1 }
+            75% { transform: translateY(3%) scale(1.18); opacity: 1 }
+            100% { transform: translateY(14%) scale(1.65); opacity: 0 }
+        }
+
+        @keyframes invitation-foliage-left {
+            0%, 24% { transform: translateX(-65%) rotate(-12deg); opacity: 0 }
+            50%, 66% { transform: translateX(0) rotate(0); opacity: .85 }
+            100% { transform: translateX(-45%) scale(1.25); opacity: 0 }
+        }
+
+        @keyframes invitation-foliage-right {
+            0%, 28% { transform: translateX(65%) rotate(12deg); opacity: 0 }
+            54%, 66% { transform: translateX(0) rotate(0); opacity: .85 }
+            100% { transform: translateX(45%) scale(1.25); opacity: 0 }
+        }
+
+        @keyframes invitation-paper-shade {
+            0% { opacity: 0 }
+            45% { opacity: 1 }
+            100% { opacity: 0 }
+        }
+
+        @keyframes invitation-detail-enter {
+            from { opacity: 0; transform: translateY(22px) }
+            to { opacity: 1; transform: none }
+        }
+
+        @keyframes invitation-photo-drift {
+            from { transform: scale(1.09) translateY(1%) }
+            to { transform: scale(1) translateY(0) }
+        }
+
+        @keyframes invitation-ornament-unfold {
+            from { opacity: 0; transform: scaleX(.65) scaleY(.88) }
+            to { opacity: 1; transform: none }
+        }
+
+        @keyframes invitation-person-left {
+            from { opacity: 0; transform: translateX(-24px) }
+            to { opacity: 1; transform: none }
+        }
+
+        @keyframes invitation-person-right {
+            from { opacity: 0; transform: translateX(24px) }
+            to { opacity: 1; transform: none }
+        }
+
+        @keyframes invitation-scroll-cue {
+            0%, 100% { transform: translateY(0) }
+            50% { transform: translateY(5px) }
+        }
+
+        @keyframes invitation-button-light {
+            0%, 25% { transform: translateX(0) skewX(-20deg) }
+            80%, 100% { transform: translateX(420%) skewX(-20deg) }
         }

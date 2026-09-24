@@ -18,6 +18,7 @@ import {
     weddingDate,
 } from './invitation-data';
 import { useInvitationMusic } from './use-invitation-music';
+import { useInvitationMotion } from './use-invitation-motion';
 
 type CoverPhase = 'closed' | 'exiting' | 'open';
 type WishForm = { name: string; attendance: Attendance | ''; message: string };
@@ -95,6 +96,7 @@ export function useInvitation(
     initialTotal: number,
 ) {
     const rootRef = useRef<HTMLDivElement>(null);
+    const coverRef = useRef<HTMLElement>(null);
     const mainTitleRef = useRef<HTMLHeadingElement>(null);
     const openButtonRef = useRef<HTMLButtonElement>(null);
     const wishListRef = useRef<HTMLDivElement>(null);
@@ -105,6 +107,13 @@ export function useInvitation(
     const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const [coverPhase, setCoverPhase] = useState<CoverPhase>('closed');
+    const [coverSnapshot, setCoverSnapshot] = useState({
+        scrollTop: 0,
+        height: 0,
+        portraitSrc: '/images/foto-mempelai/1.webp',
+    });
+    const coverOpeningDuration = 4200;
+    useInvitationMotion(rootRef, coverPhase === 'open');
     const [activeSection, setActiveSection] =
         useState<(typeof sectionIds)[number]>('beranda');
     const [countdown, setCountdown] = useState({
@@ -142,7 +151,14 @@ export function useInvitation(
     }, [guestName]);
 
     useEffect(() => {
-        document.body.classList.toggle('cover-open', coverPhase === 'closed');
+        document.body.classList.toggle('cover-open', coverPhase !== 'open');
+        if (coverPhase === 'open') {
+            mainTitleRef.current?.focus({ preventScroll: true });
+        } else if (coverPhase === 'exiting') {
+            coverRef.current
+                ?.querySelector<HTMLButtonElement>('.cover-skip')
+                ?.focus({ preventScroll: true });
+        }
         return () => document.body.classList.remove('cover-open');
     }, [coverPhase]);
 
@@ -181,32 +197,6 @@ export function useInvitation(
         setCountdown(getCountdown());
         const interval = setInterval(() => setCountdown(getCountdown()), 1000);
         return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-        const root = rootRef.current;
-        if (!root || !('IntersectionObserver' in window)) {
-            return;
-        }
-        document.documentElement.classList.add('js-ready');
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.07 },
-        );
-        root.querySelectorAll('.reveal').forEach((element) =>
-            observer.observe(element),
-        );
-        return () => {
-            observer.disconnect();
-            document.documentElement.classList.remove('js-ready');
-        };
     }, []);
 
     useEffect(() => {
@@ -301,25 +291,40 @@ export function useInvitation(
         [],
     );
 
+    const finishOpening = useCallback(() => {
+        if (coverTimerRef.current) {
+            clearTimeout(coverTimerRef.current);
+            coverTimerRef.current = null;
+        }
+        setCoverPhase((phase) => (phase === 'exiting' ? 'open' : phase));
+    }, []);
+
     const openInvitation = () => {
-        if (coverPhase !== 'closed') return;
-        setCoverPhase('exiting');
+        if (coverPhase !== 'closed' || coverTimerRef.current) return;
+        const cover = coverRef.current;
+        const portrait =
+            cover?.querySelector<HTMLImageElement>('#cover-portrait');
+        setCoverSnapshot({
+            scrollTop: cover?.scrollTop ?? 0,
+            height: cover?.clientHeight ?? window.innerHeight,
+            portraitSrc: portrait?.currentSrc || '/images/foto-mempelai/1.webp',
+        });
         window.scrollTo(0, 0);
         void music.start();
-        requestAnimationFrame(() =>
-            mainTitleRef.current?.focus({ preventScroll: true }),
-        );
-        const duration = matchMedia('(prefers-reduced-motion: reduce)').matches
-            ? 0
-            : 850;
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            setCoverPhase('open');
+            return;
+        }
+        setCoverPhase('exiting');
         coverTimerRef.current = setTimeout(
-            () => setCoverPhase('open'),
-            duration,
+            finishOpening,
+            coverOpeningDuration + 200,
         );
     };
 
     const backToCover = () => {
         if (coverTimerRef.current) clearTimeout(coverTimerRef.current);
+        coverTimerRef.current = null;
         music.stop();
         setCoverPhase('closed');
         setActiveSection('beranda');
@@ -521,6 +526,10 @@ export function useInvitation(
 
     return {
         rootRef,
+        coverRef,
+        coverSnapshot,
+        coverOpeningDuration,
+        finishOpening,
         mainTitleRef,
         openButtonRef,
         wishListRef,

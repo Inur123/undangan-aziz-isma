@@ -14,7 +14,7 @@ import {
     photos,
     type Wish,
 } from './invitation-data';
-import { dismissInvitationLoader } from './invitation-loader';
+import { InvitationCover } from './invitation-cover';
 import type { useInvitation } from './use-invitation';
 
 function useJpegFallback(event: SyntheticEvent<HTMLImageElement>): void {
@@ -2105,102 +2105,18 @@ export function InvitationMarkup({
                 </defs>
             </svg>
 
-            <section
-                className={`cover${model.coverPhase === 'exiting' ? ' exiting' : ''}`}
-                id="cover"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="cover-title"
-                hidden={model.coverPhase === 'open'}
-            >
-                <div className="cover-paper">
-                    <div className="cover-portrait">
-                        <img
-                            id="cover-portrait"
-                            alt="Pasangan pengantin dengan busana adat Jawa"
-                            width="900"
-                            height="1200"
-                            fetchPriority="high"
-                            src="/images/foto-mempelai/1.webp"
-                            onLoad={dismissInvitationLoader}
-                            onError={useJpegFallback}
-                        />
-                    </div>
-                    <div className="cover-frame" aria-hidden="true"></div>
-                    <svg
-                        className="javanese-sulur cover-sulur-left"
-                        viewBox="0 0 70 170"
-                        aria-hidden="true"
-                    >
-                        <use href="#jawa-sulur" />
-                    </svg>
-                    <svg
-                        className="javanese-sulur cover-sulur-right"
-                        viewBox="0 0 70 170"
-                        aria-hidden="true"
-                    >
-                        <use href="#jawa-sulur" />
-                    </svg>
-                    <svg className="ornament-logo" aria-hidden="true">
-                        <use href="#gunungan" />
-                    </svg>
-                    <p className="eyebrow">The wedding of</p>
-                    <h1 className="cover-title" id="cover-title">
-                        <span data-bride-short="">
-                            {invitation.bride.short}
-                        </span>
-                        <em>&amp;</em>
-                        <span data-groom-short="">
-                            {invitation.groom.short}
-                        </span>
-                    </h1>
-                    <p className="cover-date" data-date-numeric="">
-                        {formatWeddingDate({
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                        }).replaceAll('/', ' . ')}
-                    </p>
-                    <div className="cover-art" aria-hidden="true">
-                        <svg viewBox="0 0 440 360">
-                            <use href="#pendopo" />
-                        </svg>
-                    </div>
-                    <div className="guest">
-                        <p className="guest-label">
-                            Kepada Yth. Bapak/Ibu/Saudara/i
-                        </p>
-                        <p className="guest-name" id="guest-name">
-                            {guestName}
-                        </p>
-                        <button
-                            className="btn"
-                            id="open-invitation"
-                            type="button"
-                            ref={model.openButtonRef}
-                            onClick={model.openInvitation}
-                        >
-                            <svg className="icon" aria-hidden="true">
-                                <use href="#i-envelope" />
-                            </svg>
-                            Buka undangan
-                        </button>
-                    </div>
-                    <p className="cover-footnote">
-                        Tanpa mengurangi rasa hormat, kami mengundang Anda untuk
-                        hadir di hari bahagia kami.
-                    </p>
-                    <p className="cover-bottom">
-                        ꧁ &nbsp; SEBUAH JANJI, SEPANJANG HAYAT &nbsp; ꧂
-                    </p>
-                </div>
-            </section>
+            <InvitationCover
+                guestName={guestName}
+                model={model}
+                onImageError={useJpegFallback}
+            />
 
             <main
-                className="page"
+                className={`page${model.coverPhase === 'open' ? ' is-open' : ''}`}
                 id="invitation"
                 hidden={model.coverPhase === 'closed'}
-                inert={model.coverPhase === 'closed'}
+                inert={model.coverPhase !== 'open'}
+                aria-hidden={model.coverPhase !== 'open'}
             >
                 <section
                     className="hero"
@@ -2213,7 +2129,7 @@ export function InvitationMarkup({
                             aria-hidden="true"
                         >{`${invitation.bride.short[0]} & ${invitation.groom.short[0]}`}</span>
                         <span className="eyebrow">
-                            Yogyakarta ·{' '}
+                            Magetan ·{' '}
                             <span data-year="">
                                 {formatWeddingDate({ year: 'numeric' })}
                             </span>
@@ -2340,7 +2256,7 @@ export function InvitationMarkup({
                             kami memulai kisah baru bersama.
                         </p>
                     </div>
-                    <figure className="reveal">
+                    <figure className="reveal reveal-photo">
                         <div className="couple-photo">
                             <img
                                 id="couple-image"
@@ -2577,7 +2493,7 @@ export function InvitationMarkup({
                         </article>
                         <article className="story-item reveal">
                             <span className="story-year">
-                                2027 · LEMBARAN BARU
+                                2026 · LEMBARAN BARU
                             </span>
                             <h3>Melangkah selamanya</h3>
                             <p>
@@ -2616,7 +2532,7 @@ export function InvitationMarkup({
                         {photos.map((photo, index) => (
                             <button
                                 key={photo.src}
-                                className={`gallery-tile${index === 0 || index === 3 ? ' wide' : ''} reveal`}
+                                className={`gallery-tile${index === 0 || index === 3 ? ' wide' : ''} reveal reveal-photo`}
                                 type="button"
                                 data-gallery-index={index}
                                 aria-label={`Lihat foto: ${photo.caption}`}
@@ -2796,7 +2712,7 @@ export function InvitationMarkup({
                         </p>
                     </div>
                     <form
-                        className="wish-form"
+                        className="wish-form reveal"
                         id="wish-form"
                         onSubmit={model.submitWish}
                     >
@@ -2928,7 +2844,7 @@ export function InvitationMarkup({
                     </p>
                 </section>
 
-                <footer className="section closing">
+                <footer className="section closing reveal">
                     <svg className="ornament-logo" aria-hidden="true">
                         <use href="#gunungan" />
                     </svg>
@@ -2977,7 +2893,7 @@ export function InvitationMarkup({
                 className="bottom-nav has-gallery"
                 id="bottom-nav"
                 aria-label="Navigasi undangan"
-                hidden={model.coverPhase === 'closed'}
+                hidden={model.coverPhase !== 'open'}
             >
                 <a
                     className={
@@ -3075,7 +2991,7 @@ export function InvitationMarkup({
                         ? 'Jeda musik instrumental'
                         : 'Putar musik instrumental'
                 }
-                hidden={model.coverPhase === 'closed'}
+                hidden={model.coverPhase !== 'open'}
                 disabled={model.music.starting}
                 onClick={() => model.music.toggle()}
             >
