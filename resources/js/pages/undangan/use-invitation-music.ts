@@ -48,7 +48,7 @@ export function useInvitationMusic(onError: (message: string) => void) {
 
     useEffect(() => {
         const audio = new Audio(invitationMusicSource);
-        audio.loop = false;
+        audio.loop = true;
         audio.preload = 'none';
         audio.volume = 0.55;
 
@@ -62,16 +62,10 @@ export function useInvitationMusic(onError: (message: string) => void) {
                     : 0,
             );
         };
-        const handleEnded = () => {
-            audio.currentTime = 0;
-            setProgress(0);
-            setPlaying(false);
-        };
         audio.addEventListener('play', handlePlay);
         audio.addEventListener('pause', handlePause);
         audio.addEventListener('timeupdate', handleTimeUpdate);
         audio.addEventListener('durationchange', handleTimeUpdate);
-        audio.addEventListener('ended', handleEnded);
         audioRef.current = audio;
 
         const stopWhenHidden = () => {
@@ -90,7 +84,6 @@ export function useInvitationMusic(onError: (message: string) => void) {
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('timeupdate', handleTimeUpdate);
             audio.removeEventListener('durationchange', handleTimeUpdate);
-            audio.removeEventListener('ended', handleEnded);
             audio.pause();
             audio.removeAttribute('src');
             audio.load();
