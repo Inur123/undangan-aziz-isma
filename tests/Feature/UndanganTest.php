@@ -39,15 +39,24 @@ test('guest share message contains the guest name and personal invitation link',
         ->toEndWith("Hormat kami,\nIsma & Aziz");
 });
 
-test('invitation share metadata uses the cover photo and personal guest name', function () {
+test('invitation share metadata uses an optimized cover thumbnail and personal guest name', function () {
     Guest::factory()->create(['name' => 'Zainur']);
 
     $response = $this->get(route('undangan', ['to' => 'Zainur']));
 
     $response
         ->assertSee('Kepada Yth. Zainur, kami mengundang Anda untuk menghadiri pernikahan Isma &amp; Aziz.', false)
-        ->assertSee(asset('images/foto-mempelai/foto-5.jpeg'), false)
+        ->assertSee(asset('images/share/undangan-aziz-isma-v1.jpg'), false)
+        ->assertSee('<meta property="og:image:width" content="1200" />', false)
+        ->assertSee('<meta property="og:image:height" content="630" />', false)
         ->assertSee('Foto cover undangan pernikahan Isma dan Aziz', false);
+
+    expect(public_path('images/share/undangan-aziz-isma-v1.jpg'))
+        ->toBeFile()
+        ->and(filesize(public_path('images/share/undangan-aziz-isma-v1.jpg')))
+        ->toBeLessThan(500_000)
+        ->and(getimagesize(public_path('images/share/undangan-aziz-isma-v1.jpg')))
+        ->toMatchArray([1200, 630]);
 });
 
 test('public visitors cannot access guest and RSVP management', function () {

@@ -3,7 +3,8 @@
     <head>
         @php
             $invitationGuestName = data_get($page, 'props.guestName');
-            $invitationShareImage = asset('images/foto-mempelai/foto-5.jpeg');
+            $invitationCoverImage = asset('images/foto-mempelai/foto-5.jpeg');
+            $invitationShareImage = asset('images/share/undangan-aziz-isma-v1.jpg');
         @endphp
 
         <meta charset="utf-8">
@@ -134,7 +135,7 @@
         @endif
 
         <link rel="icon" type="image/webp" href="{{ asset('images/foto-mempelai/foto-5.webp') }}">
-        <link rel="apple-touch-icon" href="{{ $invitationShareImage }}">
+        <link rel="apple-touch-icon" href="{{ $invitationCoverImage }}">
 
         {{-- Open Graph Meta Tags untuk WhatsApp/Facebook --}}
         <meta property="og:title" content="Undangan Pernikahan Aziz & Isma" />
@@ -142,8 +143,8 @@
         <meta property="og:image" content="{{ $invitationShareImage }}" />
         <meta property="og:image:secure_url" content="{{ $invitationShareImage }}" />
         <meta property="og:image:type" content="image/jpeg" />
-        <meta property="og:image:width" content="2624" />
-        <meta property="og:image:height" content="3936" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="Foto cover undangan pernikahan Isma dan Aziz" />
         <meta property="og:url" content="{{ url()->full() }}" />
         <meta property="og:type" content="website" />
