@@ -29,6 +29,27 @@ test('guest links resolve to the public invitation', function () {
     expect($response->inertiaProps('guestName'))->toBe('Bapak Andi');
 });
 
+test('guest share message contains the guest name and personal invitation link', function () {
+    $guest = Guest::factory()->make(['name' => 'Zainur']);
+
+    expect($guest->getShareMessage())
+        ->toContain("Bapak/Ibu/Saudara/i\n*Zainur*")
+        ->toContain('Minggu 01 November 2026')
+        ->toContain(route('undangan', ['to' => 'Zainur']))
+        ->toEndWith("Hormat kami,\nIsma & Aziz");
+});
+
+test('invitation share metadata uses the cover photo and personal guest name', function () {
+    Guest::factory()->create(['name' => 'Zainur']);
+
+    $response = $this->get(route('undangan', ['to' => 'Zainur']));
+
+    $response
+        ->assertSee('Kepada Yth. Zainur, kami mengundang Anda untuk menghadiri pernikahan Isma &amp; Aziz.', false)
+        ->assertSee(asset('images/foto-mempelai/foto-5.jpeg'), false)
+        ->assertSee('Foto cover undangan pernikahan Isma dan Aziz', false);
+});
+
 test('public visitors cannot access guest and RSVP management', function () {
     $this->get(route('guests.index'))->assertRedirect(route('login'));
     $this->get(route('rsvps.index'))->assertRedirect(route('login'));

@@ -28,8 +28,8 @@ export function Pagination({ links }: { links: PaginatedLink[] }) {
     if (!links || links.length <= 3) return null;
 
     return (
-        <PaginationContainer className="mt-4 flex justify-end">
-            <PaginationContent>
+        <PaginationContainer className="mt-4 flex justify-center md:justify-end">
+            <PaginationContent className="max-w-full overflow-hidden rounded-xl border border-slate-200 bg-white p-1 shadow-none md:rounded-none md:border-0 md:bg-transparent md:p-0">
                 {links.map((link, i) => {
                     // Check if it's "Previous" or "Next"
                     const isPrev =
@@ -88,11 +88,7 @@ export function Pagination({ links }: { links: PaginatedLink[] }) {
                             <PaginationLink
                                 href={link.url || '#'}
                                 isActive={link.active}
-                                className={
-                                    !link.url
-                                        ? 'pointer-events-none opacity-50'
-                                        : ''
-                                }
+                                className={`${!link.url ? 'pointer-events-none opacity-50' : ''} ${!link.active ? 'hidden sm:inline-flex' : ''}`}
                                 onFinish={() =>
                                     window.history.replaceState(
                                         {},

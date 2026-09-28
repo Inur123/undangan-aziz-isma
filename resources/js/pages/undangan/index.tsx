@@ -37,13 +37,28 @@ export default function UndanganIndex({
     return (
         <>
             <Head title="Undangan Pernikahan">
-                <link rel="stylesheet" href="/undangan-assets/style.css" />
-                <link rel="stylesheet" href="/undangan-assets/compat.css" />
+                <meta
+                    head-key="color-scheme"
+                    name="color-scheme"
+                    content="light"
+                />
+                <meta
+                    head-key="supported-color-schemes"
+                    name="supported-color-schemes"
+                    content="light"
+                />
+                <link
+                    head-key="invitation-style"
+                    rel="stylesheet"
+                    href="/undangan-assets/style.css?v=0.5.5"
+                />
+                <link
+                    head-key="invitation-compat"
+                    rel="stylesheet"
+                    href="/undangan-assets/compat.css?v=0.5.0"
+                />
             </Head>
-            <div
-                ref={model.rootRef}
-                className="undangan-wrapper font-sans text-[#4a4a4a]"
-            >
+            <div ref={model.rootRef} className="undangan-wrapper">
                 <InvitationMarkup guestName={guestName} model={model} />
             </div>
         </>

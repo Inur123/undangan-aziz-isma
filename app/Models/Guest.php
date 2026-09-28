@@ -23,16 +23,17 @@ class Guest extends Model
 
     public function getShareMessage(): string
     {
-        return "Kepada Yth.\nBapak/Ibu/Saudara/i\n*{$this->name}*\n___________________\n\n"
+        return "Kepada Yth.\nBapak/Ibu/Saudara/i\n*{$this->name}*\n\n"
+            ."---\n\n"
             ."Assalamualaikum Warahmatullahi Wabarakatuh\n\n"
-            ."Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, teman sekaligus rekan, untuk menghadiri pernikahan kami pada Minggu 14 Februari 2027.\n\n"
+            ."Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, teman sekaligus rekan, untuk menghadiri pernikahan kami pada Minggu 01 November 2026.\n\n"
             ."Berikut link undangan kami, untuk info lengkap dari acara, bisa kunjungi :\n\n"
             .$this->getInvitationUrl()."\n\n"
             ."Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir dan memberikan doa restu.\n\n"
             ."Wassalamualaikum Warahmatullahi Wabarakatuh\n\n"
             ."Terima Kasih\n\n"
             ."Hormat kami,\n"
-            .'Sekar & Bima';
+            .'Isma & Aziz';
     }
 
     public function getWhatsappShareUrl(): string

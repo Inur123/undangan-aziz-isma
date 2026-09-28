@@ -1,4 +1,4 @@
-export type Attendance = "hadir" | "tidak" | "belum";
+export type Attendance = 'hadir' | 'tidak' | 'belum';
 
 export interface Wish {
     id: number;
@@ -9,79 +9,91 @@ export interface Wish {
 
 export const invitation = {
     bride: {
-        short: "Sekar",
-        full: "Sekar Ayu Prameswari",
-        parents: "Bapak Hadi Susanto & Ibu Ratna Wulandari",
+        short: 'Isma',
+        full: 'Ismatul Anwaroti, S.Pd',
+        parents: 'Bapak Slamet & Ibu Suratmi',
     },
     groom: {
-        short: "Bima",
-        full: "Bima Aditya Pratama",
-        parents: "Bapak Arif Pratama & Ibu Sri Handayani",
+        short: 'Aziz',
+        full: 'Muhammad Lathifatul Aziz, S.Pd',
+        parents: 'Bapak Kusnan & Ibu Muryati',
     },
-    date: "2026-11-01T08:00:00+07:00",
-    end: "2026-11-01T14:00:00+07:00",
-    akadTime: "08.00 – 09.00 WIB",
-    receptionTime: "11.00 – 14.00 WIB",
-    venue: "Pendopo Kinasih (contoh)",
-    address: "Magetan, Daerah Istimewa Magetan",
-    mapsQuery: "Magetan, Daerah Istimewa Magetan",
+    date: '2026-11-01T08:00:00+07:00',
+    end: '2026-11-01T14:00:00+07:00',
+    akadTime: '08.00 – 09.00 WIB',
+    receptionTime: '11.00 – 14.00 WIB',
+    venue: 'Kediaman Mempelai Wanita',
+    address:
+        'Dusun Balibatur RT 003 RW 004, Desa Temboro, Kec. Karas, Kab. Magetan',
+    mapsQuery: '-7.59186,111.39450',
     gifts: [
         {
-            bank: "BCA",
-            number: "0000000000",
-            holder: "Sekar Ayu Prameswari",
+            bank: 'BCA',
+            number: '0000000000',
+            holder: 'Ismatul Anwaroti, S.Pd',
             isExample: true,
         },
         {
-            bank: "MANDIRI",
-            number: "0000000000000",
-            holder: "Bima Aditya Pratama",
+            bank: 'MANDIRI',
+            number: '0000000000000',
+            holder: 'Muhammad Lathifatul Aziz, S.Pd',
             isExample: true,
         },
     ],
 } as const;
 
+export const featuredPhotos = {
+    cover: '/images/foto-mempelai/foto-5.webp',
+    heroMain: '/images/foto-mempelai/foto-3.webp',
+    heroAccent: '/images/foto-mempelai/foto-1.webp',
+    couple: '/images/foto-mempelai/foto-2.webp',
+} as const;
+
 export const photos = [
     {
-        src: "/images/foto-mempelai/2.webp",
-        caption: "Seiring langkah",
-        alt: "Pasangan pengantin berjalan bersama di halaman pendopo Jawa",
+        src: '/images/foto-mempelai/foto-3.webp',
+        caption: 'Di antara kita',
+        alt: 'Pasangan tersenyum dari kedua sisi dengan ruang di tengah',
+        position: 'center 28%',
     },
     {
-        src: "/images/foto-mempelai/1.webp",
-        caption: "Dalam satu bingkai",
-        alt: "Potret pasangan pengantin dalam busana adat Jawa",
+        src: '/images/foto-mempelai/foto-4.webp',
+        caption: 'Tumbuh bersama',
+        alt: 'Pasangan berdiri bersama dalam pose ceria',
+        position: 'center 28%',
     },
     {
-        src: "/images/foto-mempelai/3.webp",
-        caption: "Tempat untuk pulang",
-        alt: "Pasangan pengantin duduk bersama dan saling tersenyum di pendopo",
+        src: '/images/foto-mempelai/foto-2.webp',
+        caption: 'Saling bersandar',
+        alt: 'Pasangan duduk bersandar dan tersenyum ke arah kamera',
+        position: 'center 25%',
     },
     {
-        src: "/images/foto-mempelai/4.webp",
-        caption: "Janji yang kita jaga",
-        alt: "Detail kedua tangan pengantin saling menggenggam dengan cincin dan busana batik",
+        src: '/images/foto-mempelai/foto-1.webp',
+        caption: 'Tawa yang sama',
+        alt: 'Pasangan berpose ceria dengan kedua tangan menopang wajah',
+        position: 'center 65%',
     },
 ] as const;
 
 export const attendanceLabels: Record<Attendance, string> = {
-    hadir: "Berencana hadir",
-    tidak: "Belum bisa hadir",
-    belum: "Menyesuaikan jadwal",
+    hadir: 'Berencana hadir',
+    tidak: 'Belum bisa hadir',
+    belum: 'Menyesuaikan jadwal',
 };
 
 export const weddingDate = new Date(invitation.date);
 
 export function formatWeddingDate(options: Intl.DateTimeFormatOptions): string {
-    return new Intl.DateTimeFormat("id-ID", {
-        timeZone: "Asia/Jakarta",
+    return new Intl.DateTimeFormat('id-ID', {
+        timeZone: 'Asia/Jakarta',
         ...options,
     }).format(weddingDate);
 }
 
 export function formatAccountNumber(number: string): string {
     return number
-        .replace(/\D/g, "")
-        .replace(/(.{4})/g, "$1 ")
+        .replace(/\D/g, '')
+        .replace(/(.{4})/g, '$1 ')
         .trim();
 }

@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($page['component'] ?? null) !== 'undangan/index' && ($appearance ?? 'system') == 'dark'])>
     <head>
+        @php
+            $invitationGuestName = data_get($page, 'props.guestName');
+            $invitationShareImage = asset('images/foto-mempelai/foto-5.jpeg');
+        @endphp
+
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>
             (function() {
-                const appearance = '{{ $appearance ?? "system" }}';
+                const appearance = '{{ ($page['component'] ?? null) === 'undangan/index' ? 'light' : ($appearance ?? 'system') }}';
 
                 if (appearance === 'system') {
                     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -31,7 +36,17 @@
         </style>
 
         @if (($page['component'] ?? null) === 'undangan/index')
+            <meta name="color-scheme" content="light" data-inertia="color-scheme">
+            <meta name="supported-color-schemes" content="light" data-inertia="supported-color-schemes">
+            <link rel="stylesheet" href="{{ asset('undangan-assets/style.css') }}?v=0.5.5" data-inertia="invitation-style">
+            <link rel="stylesheet" href="{{ asset('undangan-assets/compat.css') }}?v=0.5.0" data-inertia="invitation-compat">
             <style>
+                html, html.dark, body {
+                    background-color: #ffffff;
+                    color-scheme: light;
+                    color-scheme: only light;
+                }
+
                 #invitation-boot-loader {
                     position: fixed;
                     z-index: 10000;
@@ -42,8 +57,8 @@
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background: #f7f2e8;
-                    color: #645b49;
+                    background: #ffffff;
+                    color: #234bae;
                     opacity: 1;
                     transition: opacity 250ms ease, visibility 250ms ease;
                 }
@@ -56,32 +71,25 @@
 
                 .invitation-boot-loader__content {
                     text-align: center;
-                    opacity: 0;
-                    animation: invitation-loader-reveal 180ms ease 220ms forwards;
+                    opacity: 1;
                 }
 
                 .invitation-boot-loader__spinner {
                     width: 38px;
                     height: 38px;
                     margin: 0 auto 14px;
-                    border: 1px solid #d7c9a9;
-                    border-top-color: #737860;
+                    border: 2px solid #d4dff5;
+                    border-top-color: #3461d8;
                     border-radius: 50%;
                     animation: invitation-loader-spin 800ms linear infinite;
                 }
 
                 .invitation-boot-loader__label {
                     margin: 0;
-                    font-family: Georgia, 'Times New Roman', serif;
+                    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
                     font-size: 12px;
                     letter-spacing: 0.18em;
                     text-transform: uppercase;
-                }
-
-                @keyframes invitation-loader-reveal {
-                    to {
-                        opacity: 1;
-                    }
                 }
 
                 @keyframes invitation-loader-spin {
@@ -101,7 +109,7 @@
                     }
 
                     .invitation-boot-loader__spinner {
-                        animation-duration: 1600ms;
+                        animation: none;
                     }
                 }
             </style>
@@ -125,15 +133,22 @@
             </script>
         @endif
 
-        <link rel="icon" href="{{ asset('images/foto-mempelai/1.jpg') }}" type="image/jpeg">
-        <link rel="apple-touch-icon" href="{{ asset('images/foto-mempelai/1.jpg') }}">
+        <link rel="icon" type="image/webp" href="{{ asset('images/foto-mempelai/foto-5.webp') }}">
+        <link rel="apple-touch-icon" href="{{ $invitationShareImage }}">
 
         {{-- Open Graph Meta Tags untuk WhatsApp/Facebook --}}
         <meta property="og:title" content="Undangan Pernikahan Aziz & Isma" />
-        <meta property="og:description" content="Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i, teman sekaligus rekan, untuk menghadiri acara pernikahan kami." />
-        <meta property="og:image" content="{{ asset('images/foto-mempelai/1.jpg') }}" />
-        <meta property="og:url" content="{{ url()->current() }}" />
+        <meta property="og:description" content="{{ is_string($invitationGuestName) ? "Kepada Yth. {$invitationGuestName}, kami mengundang Anda untuk menghadiri pernikahan Isma & Aziz." : 'Tanpa mengurangi rasa hormat, kami mengundang Anda untuk menghadiri pernikahan Isma & Aziz.' }}" />
+        <meta property="og:image" content="{{ $invitationShareImage }}" />
+        <meta property="og:image:secure_url" content="{{ $invitationShareImage }}" />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="2624" />
+        <meta property="og:image:height" content="3936" />
+        <meta property="og:image:alt" content="Foto cover undangan pernikahan Isma dan Aziz" />
+        <meta property="og:url" content="{{ url()->full() }}" />
         <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="{{ $invitationShareImage }}" />
 
         @fonts
 

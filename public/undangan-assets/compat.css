@@ -1,15 +1,4 @@
-/* Fallbacks for older Safari and Android WebView. Current browsers keep style.css. */
-.bottom-nav.has-gallery {
-    padding-left: 6px;
-    padding-right: 6px;
-}
-
-.bottom-nav.has-gallery a {
-    flex: 1;
-    min-width: 0;
-    padding: 5px 2px;
-}
-
+/* Fallbacks for older Safari and Android WebView. */
 .bottom-nav {
     -webkit-backdrop-filter: blur(12px);
 }
@@ -18,63 +7,14 @@
     display: none;
 }
 
-body.legacy-dialog::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 199;
-    background: #141810d9;
-}
-
-body.legacy-dialog .photo-viewer {
-    display: block;
-    z-index: 201;
-}
-
 @supports not (inset: 0) {
-    body::before,
-    .page::after,
-    .cover-paper::after,
     .cover,
-    .closing::before,
-    .cover-portrait::after,
-    .photo-viewer {
+    .photo-viewer,
+    body.legacy-dialog::after {
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
-    }
-
-    .cover-frame {
-        top: 23px;
-        right: 17px;
-        bottom: 20px;
-        left: 17px;
-    }
-
-    .cover-frame::after {
-        top: 6px;
-        right: 6px;
-        bottom: 6px;
-        left: 6px;
-    }
-
-    .event-card::after,
-    .gift-card::after {
-        top: 5px;
-        right: 5px;
-        bottom: 5px;
-        left: 5px;
-    }
-
-    .noscript-note {
-        top: auto;
-        right: 20px;
-        bottom: 15px;
-        left: 20px;
     }
 
     .gallery-image-wrap::after {
@@ -85,16 +25,12 @@ body.legacy-dialog .photo-viewer {
     }
 }
 
-@supports not (width: min(100%, 440px)) {
+@supports not (width: min(100%, 480px)) {
     .cover,
+    .page,
     .photo-viewer {
         width: 100%;
-        max-width: 440px;
-    }
-
-    .ceremonial-divider {
-        width: 100%;
-        max-width: 280px;
+        max-width: 480px;
     }
 
     .toast {
@@ -104,7 +40,8 @@ body.legacy-dialog .photo-viewer {
 
 @supports not (height: 100dvh) {
     .cover-paper {
-        min-height: var(--invitation-vh, 100vh);
+        min-height: 790px;
+        min-height: max(var(--invitation-vh, 100vh), 790px);
     }
 
     .photo-viewer {
@@ -123,7 +60,7 @@ body.legacy-dialog .photo-viewer {
     }
 
     .gallery-tile:last-child .gallery-image-wrap {
-        padding-top: 62.5%;
+        padding-top: 66.667%;
     }
 
     .gallery-image-wrap img {
@@ -135,19 +72,11 @@ body.legacy-dialog .photo-viewer {
 
 @supports not (font-size: clamp(1px, 2vw, 3px)) {
     .cover-title {
-        font: 400 55px/0.91 var(--serif);
+        font-size: 40px;
     }
 
-    @media (min-width: 350px) {
-        .cover-title {
-            font-size: 62px;
-        }
-    }
-
-    @media (min-width: 420px) {
-        .cover-title {
-            font-size: 70px;
-        }
+    .hero h1 {
+        font-size: 78px;
     }
 }
 
@@ -172,7 +101,6 @@ body.legacy-dialog .photo-viewer {
     }
 }
 
-.no-flex-gap .btn > * + *,
 .no-flex-gap .wish-head > * + * {
     margin-left: 10px;
 }
@@ -182,7 +110,6 @@ body.legacy-dialog .photo-viewer {
     margin-left: 9px;
 }
 
-.no-flex-gap .back-cover > * + *,
 .no-flex-gap .gallery-hint > * + * {
     margin-left: 7px;
 }
@@ -191,19 +118,8 @@ body.legacy-dialog .photo-viewer {
     margin-left: 6px;
 }
 
-.no-flex-gap .cover-date > * + * {
-    margin-left: 13px;
-}
-
-.no-flex-gap .divider > * + *,
-.no-flex-gap .viewer-toolbar > * + *,
-.no-flex-gap .gift-card-header > * + *,
-.no-flex-gap .wishes-summary > * + * {
-    margin-left: 15px;
-}
-
 .no-flex-gap .hero-date > * + * {
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 .no-flex-gap .viewer-pagination > * + * {
@@ -212,4 +128,20 @@ body.legacy-dialog .photo-viewer {
 
 .no-flex-gap .bottom-nav a > * + * {
     margin-top: 3px;
+}
+
+.no-flex-gap .cover-title > * + * {
+    margin-left: 8px;
+}
+
+.no-flex-gap .btn .icon {
+    margin-right: 10px;
+}
+
+.no-flex-gap .scroll-cue .icon {
+    margin-left: 9px;
+}
+
+.no-flex-gap .gallery-hint .icon {
+    margin-right: 7px;
 }

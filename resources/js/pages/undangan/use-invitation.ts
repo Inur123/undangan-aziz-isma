@@ -13,6 +13,7 @@ import { store as storeRsvp } from '@/routes/api/rsvp';
 import {
     type Attendance,
     type Wish,
+    featuredPhotos,
     invitation,
     photos,
     weddingDate,
@@ -53,30 +54,6 @@ function calendarDate(value: string | Date): string {
         .replace(/\.\d{3}/, '');
 }
 
-function escapeCalendar(value: string): string {
-    return value
-        .replace(/\\/g, '\\\\')
-        .replace(/\n/g, '\\n')
-        .replace(/,/g, '\\,')
-        .replace(/;/g, '\\;');
-}
-
-function foldCalendarLine(line: string): string {
-    const encoder = new TextEncoder();
-    let folded = '';
-    let width = 0;
-    for (const character of line) {
-        const bytes = encoder.encode(character).length;
-        if (width + bytes > 75) {
-            folded += '\r\n ';
-            width = 1;
-        }
-        folded += character;
-        width += bytes;
-    }
-    return folded;
-}
-
 function showDialog(dialog: HTMLDialogElement): void {
     if (typeof dialog.showModal === 'function') {
         dialog.showModal();
@@ -107,12 +84,16 @@ export function useInvitation(
     const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const [coverPhase, setCoverPhase] = useState<CoverPhase>('closed');
-    const [coverSnapshot, setCoverSnapshot] = useState({
+    const [coverSnapshot, setCoverSnapshot] = useState<{
+        scrollTop: number;
+        height: number;
+        portraitSrc: string;
+    }>({
         scrollTop: 0,
         height: 0,
-        portraitSrc: '/images/foto-mempelai/1.webp',
+        portraitSrc: featuredPhotos.cover,
     });
-    const coverOpeningDuration = 4200;
+    const coverOpeningDuration = 3600;
     useInvitationMotion(rootRef, coverPhase === 'open');
     const [activeSection, setActiveSection] =
         useState<(typeof sectionIds)[number]>('beranda');
@@ -307,7 +288,7 @@ export function useInvitation(
         setCoverSnapshot({
             scrollTop: cover?.scrollTop ?? 0,
             height: cover?.clientHeight ?? window.innerHeight,
-            portraitSrc: portrait?.currentSrc || '/images/foto-mempelai/1.webp',
+            portraitSrc: portrait?.currentSrc || featuredPhotos.cover,
         });
         window.scrollTo(0, 0);
         void music.start();
@@ -335,36 +316,20 @@ export function useInvitation(
     };
 
     const saveDate = () => {
-        const lines = [
-            'BEGIN:VCALENDAR',
-            'VERSION:2.0',
-            'PRODID:-//Undangan Jawa//ID',
-            'CALSCALE:GREGORIAN',
-            'BEGIN:VEVENT',
-            `UID:${weddingDate.getTime()}@undangan.local`,
-            `DTSTAMP:${calendarDate(new Date())}`,
-            `DTSTART:${calendarDate(invitation.date)}`,
-            `DTEND:${calendarDate(invitation.end)}`,
-            `SUMMARY:${escapeCalendar(`Pernikahan ${invitation.bride.short} & ${invitation.groom.short}`)}`,
-            `LOCATION:${escapeCalendar(`${invitation.venue}, ${invitation.address}`)}`,
-            `DESCRIPTION:${escapeCalendar(`Akad: ${invitation.akadTime}. Resepsi: ${invitation.receptionTime}. Kami menantikan kehadiran Anda.`)}`,
-            'END:VEVENT',
-            'END:VCALENDAR',
-            '',
-        ];
-        const url = URL.createObjectURL(
-            new Blob([lines.map(foldCalendarLine).join('\r\n')], {
-                type: 'text/calendar;charset=utf-8',
-            }),
+        const parameters = new URLSearchParams({
+            action: 'TEMPLATE',
+            text: `Pernikahan ${invitation.bride.short} & ${invitation.groom.short}`,
+            dates: `${calendarDate(invitation.date)}/${calendarDate(invitation.end)}`,
+            stz: 'Asia/Jakarta',
+            etz: 'Asia/Jakarta',
+            details: `Akad nikah: ${invitation.akadTime}. Resepsi: ${invitation.receptionTime}. Kami menantikan kehadiran Anda.`,
+            location: `${invitation.venue}, ${invitation.address}`,
+        });
+
+        window.open(
+            `https://calendar.google.com/calendar/r/eventedit?${parameters.toString()}`,
+            '_blank',
         );
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'pernikahan-sekar-bima.ics';
-        document.body.append(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1500);
-        showToast('Buka file kalender yang diunduh untuk menyimpan tanggal.');
     };
 
     const submitWish = (event: FormEvent<HTMLFormElement>) => {

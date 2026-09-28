@@ -14,7 +14,11 @@ export function useInvitationMotion(
         const elements = Array.from(
             root.querySelectorAll<HTMLElement>('.reveal'),
         );
+        const decorations = Array.from(
+            root.querySelectorAll<HTMLElement>('[data-motion]'),
+        );
         let observer: IntersectionObserver | undefined;
+        let motionObserver: IntersectionObserver | undefined;
 
         const reveal = (element: Element) => {
             element.classList.add('is-visible');
@@ -22,14 +26,34 @@ export function useInvitationMotion(
         };
         const configureMotion = () => {
             observer?.disconnect();
-            root.classList.remove('js-ready');
+            motionObserver?.disconnect();
+            root.classList.remove('js-ready', 'motion-enabled');
+            decorations.forEach((element) =>
+                element.classList.remove('motion-visible'),
+            );
 
             if (preference.matches || !('IntersectionObserver' in window)) {
                 elements.forEach(reveal);
                 return;
             }
 
-            root.classList.add('js-ready');
+            root.classList.add('js-ready', 'motion-enabled');
+            motionObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    entry.target.classList.toggle(
+                        'motion-visible',
+                        entry.isIntersecting,
+                    );
+                });
+            });
+            decorations
+                .filter((element) =>
+                    isOpen
+                        ? !element.closest('.cover')
+                        : element.closest('.cover'),
+                )
+                .forEach((element) => motionObserver?.observe(element));
+
             if (!isOpen) {
                 elements.forEach((element) =>
                     element.classList.remove('is-visible'),
@@ -49,6 +73,9 @@ export function useInvitationMotion(
                 .filter((element) => !element.classList.contains('is-visible'))
                 .forEach((element) => observer?.observe(element));
         };
+        const onVisibilityChange = () => {
+            root.classList.toggle('motion-paused', document.hidden);
+        };
         const onFocus = (event: FocusEvent) => {
             const element =
                 event.target instanceof Element
@@ -58,7 +85,9 @@ export function useInvitationMotion(
         };
 
         configureMotion();
+        onVisibilityChange();
         root.addEventListener('focusin', onFocus);
+        document.addEventListener('visibilitychange', onVisibilityChange);
         if (typeof preference.addEventListener === 'function') {
             preference.addEventListener('change', configureMotion);
         } else {
@@ -67,8 +96,20 @@ export function useInvitationMotion(
 
         return () => {
             observer?.disconnect();
-            root.classList.remove('js-ready');
+            motionObserver?.disconnect();
+            root.classList.remove(
+                'js-ready',
+                'motion-enabled',
+                'motion-paused',
+            );
+            decorations.forEach((element) =>
+                element.classList.remove('motion-visible'),
+            );
             root.removeEventListener('focusin', onFocus);
+            document.removeEventListener(
+                'visibilitychange',
+                onVisibilityChange,
+            );
             if (typeof preference.removeEventListener === 'function') {
                 preference.removeEventListener('change', configureMotion);
             } else {

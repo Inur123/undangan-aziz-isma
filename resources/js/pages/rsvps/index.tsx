@@ -72,26 +72,26 @@ export default function RsvpsIndex({
     return (
         <>
             <Head title="RSVP & Ucapan" />
-            <div className="flex w-full flex-col gap-6 p-6">
+            <div className="flex w-full min-w-0 flex-col gap-4 p-4 md:gap-6 md:p-6">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">
+                    <h1 className="text-xl font-semibold tracking-tight text-slate-950 md:text-2xl md:font-bold">
                         RSVP & Ucapan
                     </h1>
-                    <p className="text-muted-foreground mt-1 text-sm">
+                    <p className="mt-1 text-[13px] text-slate-500 md:text-sm">
                         Konfirmasi kehadiran dan doa dari tamu undangan.
                     </p>
                 </div>
 
                 {/* Stats */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="grid grid-cols-2 gap-2.5 md:gap-4 lg:grid-cols-4">
+                    <Card className="md:border-border gap-3 rounded-xl border-slate-200 py-4 shadow-none md:gap-6 md:py-6 md:shadow-sm">
+                        <CardHeader className="flex flex-row items-center justify-between px-4 pb-0 md:px-6 md:pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Total RSVP
                             </CardTitle>
                             <MessageSquareHeart className="text-muted-foreground h-4 w-4" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 md:px-6">
                             <div className="text-2xl font-bold">
                                 {stats.total}
                             </div>
@@ -101,14 +101,14 @@ export default function RsvpsIndex({
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <Card className="md:border-border gap-3 rounded-xl border-slate-200 py-4 shadow-none md:gap-6 md:py-6 md:shadow-sm">
+                        <CardHeader className="flex flex-row items-center justify-between px-4 pb-0 md:px-6 md:pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Akan Hadir
                             </CardTitle>
                             <UserCheck className="h-4 w-4 text-green-500" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 md:px-6">
                             <div className="text-2xl font-bold text-green-600">
                                 {stats.hadir}
                             </div>
@@ -118,14 +118,14 @@ export default function RsvpsIndex({
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <Card className="md:border-border gap-3 rounded-xl border-slate-200 py-4 shadow-none md:gap-6 md:py-6 md:shadow-sm">
+                        <CardHeader className="flex flex-row items-center justify-between px-4 pb-0 md:px-6 md:pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Tidak Hadir
                             </CardTitle>
                             <UserX className="h-4 w-4 text-red-500" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 md:px-6">
                             <div className="text-2xl font-bold text-red-600">
                                 {stats.tidak}
                             </div>
@@ -135,14 +135,14 @@ export default function RsvpsIndex({
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <Card className="md:border-border gap-3 rounded-xl border-slate-200 py-4 shadow-none md:gap-6 md:py-6 md:shadow-sm">
+                        <CardHeader className="flex flex-row items-center justify-between px-4 pb-0 md:px-6 md:pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Belum Pasti
                             </CardTitle>
                             <Clock className="h-4 w-4 text-amber-500" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 md:px-6">
                             <div className="text-2xl font-bold text-amber-600">
                                 {stats.belum}
                             </div>
@@ -154,14 +154,18 @@ export default function RsvpsIndex({
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="bg-muted/30 flex flex-wrap items-center gap-2 rounded-md border p-2 shadow-sm">
+                <div className="md:border-border md:bg-muted/30 flex [scrollbar-width:none] items-center gap-1.5 overflow-x-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-none md:flex-wrap md:rounded-md md:p-2 md:shadow-sm [&::-webkit-scrollbar]:hidden">
                     <Filter className="text-muted-foreground mx-1 h-4 w-4 shrink-0" />
                     {filters.map((f) => (
                         <Button
                             key={f.key}
-                            variant={filter === f.key ? 'default' : 'ghost'}
+                            variant="ghost"
                             size="sm"
-                            className="h-7 px-3 text-xs"
+                            className={`h-8 shrink-0 rounded-lg px-3 text-xs md:h-7 md:rounded-md ${
+                                filter === f.key
+                                    ? 'bg-slate-900 text-white hover:bg-slate-800 hover:text-white'
+                                    : 'text-slate-600 hover:bg-slate-100'
+                            }`}
                             asChild
                         >
                             <Link
@@ -177,7 +181,7 @@ export default function RsvpsIndex({
                 </div>
 
                 {/* RSVP List */}
-                <Card className="gap-0 overflow-hidden rounded-md border p-0 shadow-sm">
+                <Card className="md:border-border min-w-0 gap-0 overflow-hidden rounded-2xl border-slate-200 p-0 shadow-none md:rounded-md md:shadow-sm">
                     <CardContent className="p-0">
                         {rsvps.data.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -195,88 +199,137 @@ export default function RsvpsIndex({
                                 </p>
                             </div>
                         ) : (
-                            <div className="overflow-x-auto">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="h-10 w-[40px] pl-4 text-xs">
-                                                No
-                                            </TableHead>
-                                            <TableHead className="h-10 w-[200px] text-xs">
-                                                Nama
-                                            </TableHead>
-                                            <TableHead className="h-10 w-[180px] text-xs">
-                                                Kehadiran
-                                            </TableHead>
-                                            <TableHead className="h-10 min-w-[250px] text-xs">
-                                                Ucapan
-                                            </TableHead>
-                                            <TableHead className="h-10 w-[160px] pr-4 text-right text-xs">
-                                                Tanggal
-                                            </TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {rsvps.data.map((rsvp, index) => {
-                                            const config =
-                                                attendanceConfig[
-                                                    rsvp.attendance
-                                                ];
-                                            return (
-                                                <TableRow key={rsvp.id}>
-                                                    <TableCell className="text-muted-foreground py-3 pl-4 text-xs">
-                                                        {(rsvps.from || 1) +
-                                                            index}
-                                                    </TableCell>
-                                                    <TableCell className="py-3">
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="bg-primary/10 text-primary flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold">
-                                                                {Array.from(
-                                                                    rsvp.name,
-                                                                )[0]?.toUpperCase() ??
-                                                                    'T'}
-                                                            </div>
-                                                            <span
-                                                                className="max-w-[150px] truncate text-sm font-semibold"
-                                                                title={
-                                                                    rsvp.name
-                                                                }
-                                                            >
-                                                                {rsvp.name}
-                                                            </span>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell className="py-3">
+                            <>
+                                <div className="divide-y divide-slate-100 bg-white px-4 md:hidden">
+                                    {rsvps.data.map((rsvp) => {
+                                        const config =
+                                            attendanceConfig[rsvp.attendance];
+                                        return (
+                                            <article
+                                                key={rsvp.id}
+                                                className="min-w-0 py-4"
+                                            >
+                                                <div className="flex items-start gap-3">
+                                                    <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-sm font-semibold text-slate-700">
+                                                        {Array.from(
+                                                            rsvp.name,
+                                                        )[0]?.toUpperCase() ??
+                                                            'T'}
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="truncate font-semibold text-slate-900">
+                                                            {rsvp.name}
+                                                        </p>
                                                         <span
-                                                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${config.color}`}
+                                                            className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-medium ${config.color}`}
                                                         >
-                                                            <config.icon className="h-3 w-3 shrink-0" />
+                                                            <config.icon className="size-3" />
                                                             {config.label}
                                                         </span>
-                                                    </TableCell>
-                                                    <TableCell className="text-muted-foreground max-w-sm py-3 text-sm break-words whitespace-normal sm:max-w-md lg:max-w-xl">
-                                                        {rsvp.message}
-                                                    </TableCell>
-                                                    <TableCell className="text-muted-foreground py-3 pr-4 text-right text-[11px] whitespace-nowrap">
-                                                        {new Date(
-                                                            rsvp.created_at,
-                                                        ).toLocaleString(
-                                                            'id-ID',
-                                                            {
-                                                                day: 'numeric',
-                                                                month: 'short',
-                                                                year: 'numeric',
-                                                                hour: '2-digit',
-                                                                minute: '2-digit',
-                                                            },
-                                                        )}
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            </div>
+                                                    </div>
+                                                </div>
+                                                <p className="mt-4 text-sm leading-6 text-slate-600">
+                                                    {rsvp.message}
+                                                </p>
+                                                <p className="mt-4 border-t border-slate-100 pt-3 text-[11px] text-slate-400">
+                                                    {new Date(
+                                                        rsvp.created_at,
+                                                    ).toLocaleString('id-ID', {
+                                                        day: 'numeric',
+                                                        month: 'short',
+                                                        year: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                    })}
+                                                </p>
+                                            </article>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="hidden overflow-x-auto md:block">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="h-10 w-[40px] pl-4 text-xs">
+                                                    No
+                                                </TableHead>
+                                                <TableHead className="h-10 w-[200px] text-xs">
+                                                    Nama
+                                                </TableHead>
+                                                <TableHead className="h-10 w-[180px] text-xs">
+                                                    Kehadiran
+                                                </TableHead>
+                                                <TableHead className="h-10 min-w-[250px] text-xs">
+                                                    Ucapan
+                                                </TableHead>
+                                                <TableHead className="h-10 w-[160px] pr-4 text-right text-xs">
+                                                    Tanggal
+                                                </TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {rsvps.data.map((rsvp, index) => {
+                                                const config =
+                                                    attendanceConfig[
+                                                        rsvp.attendance
+                                                    ];
+                                                return (
+                                                    <TableRow key={rsvp.id}>
+                                                        <TableCell className="text-muted-foreground py-3 pl-4 text-xs">
+                                                            {(rsvps.from || 1) +
+                                                                index}
+                                                        </TableCell>
+                                                        <TableCell className="py-3">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="bg-primary/10 text-primary flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold">
+                                                                    {Array.from(
+                                                                        rsvp.name,
+                                                                    )[0]?.toUpperCase() ??
+                                                                        'T'}
+                                                                </div>
+                                                                <span
+                                                                    className="max-w-[150px] truncate text-sm font-semibold"
+                                                                    title={
+                                                                        rsvp.name
+                                                                    }
+                                                                >
+                                                                    {rsvp.name}
+                                                                </span>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell className="py-3">
+                                                            <span
+                                                                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${config.color}`}
+                                                            >
+                                                                <config.icon className="h-3 w-3 shrink-0" />
+                                                                {config.label}
+                                                            </span>
+                                                        </TableCell>
+                                                        <TableCell className="text-muted-foreground max-w-sm py-3 text-sm break-words whitespace-normal sm:max-w-md lg:max-w-xl">
+                                                            {rsvp.message}
+                                                        </TableCell>
+                                                        <TableCell className="text-muted-foreground py-3 pr-4 text-right text-[11px] whitespace-nowrap">
+                                                            {new Date(
+                                                                rsvp.created_at,
+                                                            ).toLocaleString(
+                                                                'id-ID',
+                                                                {
+                                                                    day: 'numeric',
+                                                                    month: 'short',
+                                                                    year: 'numeric',
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                },
+                                                            )}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </>
                         )}
                     </CardContent>
                 </Card>
