@@ -11,6 +11,8 @@ class Guest extends Model
     /** @use HasFactory<GuestFactory> */
     use HasFactory;
 
+    private const SHARE_PREVIEW_VERSION = 2;
+
     /** @var list<string> */
     protected $fillable = [
         'name',
@@ -18,7 +20,10 @@ class Guest extends Model
 
     public function getInvitationUrl(): string
     {
-        return route('undangan', ['to' => $this->name]);
+        return route('undangan', [
+            'to' => $this->name,
+            'v' => self::SHARE_PREVIEW_VERSION,
+        ]);
     }
 
     public function getShareMessage(): string
