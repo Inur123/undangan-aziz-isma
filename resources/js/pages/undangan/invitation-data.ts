@@ -43,8 +43,8 @@ export const invitation = {
 } as const;
 
 export const featuredPhotos = {
-    cover: '/images/foto-mempelai/foto-5.webp',
-    heroMain: '/images/foto-mempelai/foto-3.webp',
+    cover: '/images/foto-mempelai/foto-3.webp',
+    heroMain: '/images/foto-mempelai/foto-2.webp',
     heroAccent: '/images/foto-mempelai/foto-1.webp',
     couple: '/images/foto-mempelai/foto-2.webp',
 } as const;
@@ -64,8 +64,8 @@ export const photos = [
     },
     {
         src: '/images/foto-mempelai/foto-2.webp',
-        caption: 'Saling bersandar',
-        alt: 'Pasangan duduk bersandar dan tersenyum ke arah kamera',
+        caption: 'Saling menatap',
+        alt: 'Pasangan duduk saling menatap dan tersenyum satu sama lain',
         position: 'center 25%',
     },
     {
