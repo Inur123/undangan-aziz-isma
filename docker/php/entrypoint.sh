@@ -65,5 +65,6 @@ if [ "${RUN_OPTIMIZE:-false}" = "true" ]; then
     gosu www-data php artisan optimize --no-interaction
 fi
 
-set -- gosu www-data "$@"
+# The official PHP image drops FPM pool workers to www-data. Keep only the FPM
+# master as root so it can open /proc/self/fd/2 and manage worker processes.
 exec "$@"
