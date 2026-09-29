@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Guest;
 use App\Models\Rsvp;
+use App\Support\InvitationAssets;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,6 +42,7 @@ class UndanganController extends Controller
 
         $response = Inertia::render('undangan/index', [
             'guestName' => $guest->name,
+            'invitationAssets' => InvitationAssets::styleUrls(),
             'rsvps' => $rsvps,
             'rsvpTotal' => Rsvp::count(),
         ])->toResponse($request);

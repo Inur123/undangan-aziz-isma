@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-const invitationMusicSource = '/musik/musik-weding.MP3';
+import invitationMusicSource from '../../../audio/musik-weding.mp3';
 
 export function useInvitationMusic(onError: (message: string) => void) {
     const audioRef = useRef<HTMLAudioElement | null>(null);

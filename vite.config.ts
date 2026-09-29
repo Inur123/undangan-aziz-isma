@@ -13,7 +13,13 @@ export default defineConfig({
     },
     plugins: lazyPlugins(() => [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx'],
+            input: [
+                'resources/css/app.css',
+                'resources/css/undangan/style.css',
+                'resources/css/undangan/compat.css',
+                'resources/js/app.tsx',
+            ],
+            assets: ['resources/images/**', 'resources/audio/**'],
             refresh: true,
             fonts: [
                 bunny('Instrument Sans', {
@@ -71,7 +77,7 @@ export default defineConfig({
             'composer.json',
             'resources/js/components/ui/*',
             'resources/views/mail/*',
-            'public/undangan-assets/style.css',
+            'resources/css/undangan/style.css',
             'template/index.html',
         ],
         sortTailwindcss: {

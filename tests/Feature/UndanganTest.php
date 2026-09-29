@@ -2,6 +2,7 @@
 
 use App\Models\Guest;
 use App\Models\Rsvp;
+use App\Support\InvitationAssets;
 
 beforeEach(function () {
     Rsvp::query()->delete();
@@ -16,6 +17,7 @@ test('public invitation accepts a guest name and protects the response from refe
     $response->assertOk()
         ->assertHeader('Referrer-Policy', 'no-referrer')
         ->assertHeader('Cache-Control', 'no-store, private')
+        ->assertHeader('CDN-Cache-Control', 'no-store')
         ->assertHeader('X-Robots-Tag', 'noindex, nofollow');
     $response->assertInertia(fn ($page) => $page
         ->component('undangan/index')
@@ -35,7 +37,10 @@ test('guest share message contains the guest name and personal invitation link',
     expect($guest->getShareMessage())
         ->toContain("Bapak/Ibu/Saudara/i\n*Zainur*")
         ->toContain('Minggu 01 November 2026')
-        ->toContain(route('undangan', ['to' => 'Zainur', 'v' => 2]))
+        ->toContain(route('undangan', [
+            'to' => 'Zainur',
+            'preview' => InvitationAssets::previewVersion(),
+        ]))
         ->toEndWith("Hormat kami,\nIsma & Aziz");
 });
 
@@ -46,17 +51,20 @@ test('invitation share metadata uses an optimized cover thumbnail and personal g
 
     $response
         ->assertSee('Kepada Yth. Zainur, kami mengundang Anda untuk menghadiri pernikahan Isma &amp; Aziz.', false)
-        ->assertSee(asset('images/share/undangan-aziz-isma-v1.jpg'), false)
+        ->assertSee(InvitationAssets::shareImageUrl(), false)
         ->assertSee('<meta property="og:image:width" content="1200" />', false)
-        ->assertSee('<meta property="og:image:height" content="630" />', false)
-        ->assertSee('Foto cover undangan pernikahan Isma dan Aziz', false);
+        ->assertSee('<meta property="og:image:height" content="1200" />', false)
+        ->assertSee('Foto cover undangan pernikahan Isma dan Aziz', false)
+        ->assertDontSee('?v=', false);
 
-    expect(public_path('images/share/undangan-aziz-isma-v1.jpg'))
+    expect(resource_path('images/share/undangan-aziz-isma.jpg'))
         ->toBeFile()
-        ->and(filesize(public_path('images/share/undangan-aziz-isma-v1.jpg')))
-        ->toBeLessThan(500_000)
-        ->and(getimagesize(public_path('images/share/undangan-aziz-isma-v1.jpg')))
-        ->toMatchArray([1200, 630]);
+        ->and(getimagesize(resource_path('images/share/undangan-aziz-isma.jpg')))
+        ->toMatchArray([1200, 1200]);
+
+    $response->assertInertia(fn ($page) => $page
+        ->where('invitationAssets.style', InvitationAssets::styleUrls()['style'])
+        ->where('invitationAssets.compat', InvitationAssets::styleUrls()['compat']));
 });
 
 test('public visitors cannot access guest and RSVP management', function () {

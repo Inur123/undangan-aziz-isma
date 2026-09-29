@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\InvitationAssets;
 use Database\Factories\GuestFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,8 +11,6 @@ class Guest extends Model
 {
     /** @use HasFactory<GuestFactory> */
     use HasFactory;
-
-    private const SHARE_PREVIEW_VERSION = 2;
 
     /** @var list<string> */
     protected $fillable = [
@@ -22,7 +21,7 @@ class Guest extends Model
     {
         return route('undangan', [
             'to' => $this->name,
-            'v' => self::SHARE_PREVIEW_VERSION,
+            'preview' => InvitationAssets::previewVersion(),
         ]);
     }
 

@@ -9,6 +9,11 @@ import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+window.addEventListener('vite:preloadError', (event) => {
+    event.preventDefault();
+    window.location.reload();
+});
+
 void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {

@@ -1,10 +1,13 @@
+@use('App\Support\InvitationAssets')
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($page['component'] ?? null) !== 'undangan/index' && ($appearance ?? 'system') == 'dark'])>
     <head>
         @php
             $invitationGuestName = data_get($page, 'props.guestName');
-            $invitationCoverImage = asset('images/foto-mempelai/foto-3.jpeg');
-            $invitationShareImage = asset('images/share/undangan-aziz-isma-v1.jpg');
+            $invitationCoverImage = InvitationAssets::coverImageUrl();
+            $invitationShareImage = InvitationAssets::shareImageUrl();
+            $invitationStyles = InvitationAssets::styleUrls();
         @endphp
 
         <meta charset="utf-8">
@@ -39,8 +42,8 @@
         @if (($page['component'] ?? null) === 'undangan/index')
             <meta name="color-scheme" content="light" data-inertia="color-scheme">
             <meta name="supported-color-schemes" content="light" data-inertia="supported-color-schemes">
-            <link rel="stylesheet" href="{{ asset('undangan-assets/style.css') }}?v=0.5.5" data-inertia="invitation-style">
-            <link rel="stylesheet" href="{{ asset('undangan-assets/compat.css') }}?v=0.5.0" data-inertia="invitation-compat">
+            <link rel="stylesheet" href="{{ $invitationStyles['style'] }}" data-inertia="invitation-style">
+            <link rel="stylesheet" href="{{ $invitationStyles['compat'] }}" data-inertia="invitation-compat">
             <style>
                 html, html.dark, body {
                     background-color: #ffffff;
@@ -134,7 +137,7 @@
             </script>
         @endif
 
-        <link rel="icon" type="image/webp" href="{{ asset('images/foto-mempelai/foto-3.webp') }}">
+        <link rel="icon" type="image/webp" href="{{ InvitationAssets::faviconUrl() }}">
         <link rel="apple-touch-icon" href="{{ $invitationCoverImage }}">
 
         {{-- Open Graph Meta Tags untuk WhatsApp/Facebook --}}

@@ -1,3 +1,8 @@
+import photo1 from '../../../images/foto-mempelai/foto-1.webp';
+import photo2 from '../../../images/foto-mempelai/foto-2.webp';
+import photo3 from '../../../images/foto-mempelai/foto-3.webp';
+import photo4 from '../../../images/foto-mempelai/foto-4.webp';
+
 export type Attendance = 'hadir' | 'tidak' | 'belum';
 
 export interface Wish {
@@ -43,33 +48,33 @@ export const invitation = {
 } as const;
 
 export const featuredPhotos = {
-    cover: '/images/foto-mempelai/foto-3.webp',
-    heroMain: '/images/foto-mempelai/foto-2.webp',
-    heroAccent: '/images/foto-mempelai/foto-1.webp',
-    couple: '/images/foto-mempelai/foto-2.webp',
+    cover: photo3,
+    heroMain: photo2,
+    heroAccent: photo1,
+    couple: photo2,
 } as const;
 
 export const photos = [
     {
-        src: '/images/foto-mempelai/foto-3.webp',
+        src: photo3,
         caption: 'Di antara kita',
         alt: 'Pasangan tersenyum dari kedua sisi dengan ruang di tengah',
         position: 'center 28%',
     },
     {
-        src: '/images/foto-mempelai/foto-4.webp',
+        src: photo4,
         caption: 'Tumbuh bersama',
         alt: 'Pasangan berdiri bersama dalam pose ceria',
         position: 'center 28%',
     },
     {
-        src: '/images/foto-mempelai/foto-2.webp',
+        src: photo2,
         caption: 'Saling menatap',
         alt: 'Pasangan duduk saling menatap dan tersenyum satu sama lain',
         position: 'center 25%',
     },
     {
-        src: '/images/foto-mempelai/foto-1.webp',
+        src: photo1,
         caption: 'Tawa yang sama',
         alt: 'Pasangan berpose ceria dengan kedua tangan menopang wajah',
         position: 'center 65%',

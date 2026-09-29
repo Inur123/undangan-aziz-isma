@@ -7,12 +7,17 @@ import { useInvitation } from './use-invitation';
 
 interface UndanganProps {
     guestName: string;
+    invitationAssets: {
+        style: string;
+        compat: string;
+    };
     rsvps: Wish[];
     rsvpTotal: number;
 }
 
 export default function UndanganIndex({
     guestName,
+    invitationAssets,
     rsvps,
     rsvpTotal,
 }: UndanganProps) {
@@ -50,12 +55,12 @@ export default function UndanganIndex({
                 <link
                     head-key="invitation-style"
                     rel="stylesheet"
-                    href="/undangan-assets/style.css?v=0.5.5"
+                    href={invitationAssets.style}
                 />
                 <link
                     head-key="invitation-compat"
                     rel="stylesheet"
-                    href="/undangan-assets/compat.css?v=0.5.0"
+                    href={invitationAssets.compat}
                 />
             </Head>
             <div ref={model.rootRef} className="undangan-wrapper">
