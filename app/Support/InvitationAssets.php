@@ -3,7 +3,6 @@
 namespace App\Support;
 
 use Illuminate\Support\Facades\Vite;
-use RuntimeException;
 
 final class InvitationAssets
 {
@@ -39,16 +38,5 @@ final class InvitationAssets
             'style' => Vite::asset(self::STYLE_SOURCE),
             'compat' => Vite::asset(self::COMPAT_STYLE_SOURCE),
         ];
-    }
-
-    public static function previewVersion(): string
-    {
-        $viewHash = hash_file('sha256', resource_path('views/app.blade.php'));
-
-        if ($viewHash === false) {
-            throw new RuntimeException('Unable to generate the invitation preview version.');
-        }
-
-        return substr(hash('sha256', self::shareImageUrl().'|'.$viewHash), 0, 12);
     }
 }

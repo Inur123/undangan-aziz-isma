@@ -37,10 +37,8 @@ test('guest share message contains the guest name and personal invitation link',
     expect($guest->getShareMessage())
         ->toContain("Bapak/Ibu/Saudara/i\n*Zainur*")
         ->toContain('Minggu 01 November 2026')
-        ->toContain(route('undangan', [
-            'to' => 'Zainur',
-            'preview' => InvitationAssets::previewVersion(),
-        ]))
+        ->toContain(route('undangan', ['to' => 'Zainur']))
+        ->not->toContain('preview=')
         ->toEndWith("Hormat kami,\nIsma & Aziz");
 });
 

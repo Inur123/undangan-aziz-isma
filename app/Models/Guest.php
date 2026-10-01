@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Support\InvitationAssets;
 use Database\Factories\GuestFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +20,6 @@ class Guest extends Model
     {
         return route('undangan', [
             'to' => $this->name,
-            'preview' => InvitationAssets::previewVersion(),
         ]);
     }
 

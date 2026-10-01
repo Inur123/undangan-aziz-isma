@@ -159,7 +159,10 @@ export function InvitationMarkup({
                         Seiring langkah, sepanjang hayat.
                     </p>
                     <div className="hero-collage" data-motion>
-                        <figure className="hero-photo hero-photo--main">
+                        <figure
+                            className="hero-photo hero-photo--main motion-keepsake"
+                            data-ambient
+                        >
                             <img
                                 src={featuredPhotos.heroMain}
                                 width="1400"
@@ -170,7 +173,10 @@ export function InvitationMarkup({
                             />
                             <figcaption>Every day, with you.</figcaption>
                         </figure>
-                        <figure className="hero-photo hero-photo--small">
+                        <figure
+                            className="hero-photo hero-photo--small motion-keepsake"
+                            data-ambient
+                        >
                             <img
                                 src={featuredPhotos.heroAccent}
                                 width="1122"
@@ -182,6 +188,7 @@ export function InvitationMarkup({
                         </figure>
                         <span
                             className="hero-note motion-float"
+                            data-ambient
                             aria-hidden="true"
                         >
                             it's always

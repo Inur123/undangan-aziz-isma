@@ -4,7 +4,7 @@ import {
     formatWeddingDate,
     invitation,
 } from './invitation-data';
-import { InvitationDecor } from './invitation-decor';
+import { CelebrationMarks, InvitationDecor } from './invitation-decor';
 import { dismissInvitationLoader } from './invitation-loader';
 import type { useInvitation } from './use-invitation';
 
@@ -37,8 +37,12 @@ function CoverPaper({ guestName, model, onImageError }: CoverProps) {
                     BETTER TOGETHER
                 </span>
             </div>
-            <div className="cover-sticker" aria-hidden="true">
-                <svg viewBox="0 0 80 80">
+            <div className="cover-sticker" data-motion aria-hidden="true">
+                <svg
+                    className="motion-sticker"
+                    data-ambient
+                    viewBox="0 0 80 80"
+                >
                     <use href="#d-spark" />
                 </svg>
                 <span>
@@ -129,6 +133,9 @@ export function InvitationCover(props: CoverProps) {
                         <div className="opening-wash opening-wash--one" />
                         <div className="opening-wash opening-wash--two" />
                         <div className="opening-orbit" />
+                        <div className="opening-halo opening-halo--one" />
+                        <div className="opening-halo opening-halo--two" />
+                        <CelebrationMarks opening />
                         <div className="opening-collage">
                             <div className="opening-card opening-card--back">
                                 <span>you &amp; me.</span>
@@ -149,16 +156,6 @@ export function InvitationCover(props: CoverProps) {
                             <svg className="opening-spark" viewBox="0 0 80 80">
                                 <use href="#d-spark" />
                             </svg>
-                        </div>
-                        <div className="opening-confetti">
-                            {Array.from({ length: 12 }, (_, index) => (
-                                <i
-                                    key={index}
-                                    style={
-                                        { '--piece': index } as CSSProperties
-                                    }
-                                />
-                            ))}
                         </div>
                         <p className="opening-copy">
                             A little love.
