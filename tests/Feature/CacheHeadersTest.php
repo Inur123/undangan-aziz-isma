@@ -12,9 +12,9 @@ test('html responses require browser revalidation and bypass CDN storage', funct
 });
 
 test('personal invitation keeps its stricter no-store policy', function () {
-    Guest::factory()->create(['name' => 'Ibu Sari']);
+    $guest = Guest::factory()->create(['name' => 'Ibu Sari']);
 
-    $this->get(route('undangan', ['to' => 'Ibu Sari']))
+    $this->get(route('undangan', ['to' => $guest->slug]))
         ->assertOk()
         ->assertHeader('Cache-Control', 'no-store, private')
         ->assertHeader('CDN-Cache-Control', 'no-store');

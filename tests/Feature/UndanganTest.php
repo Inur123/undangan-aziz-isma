@@ -9,10 +9,10 @@ beforeEach(function () {
     Guest::query()->delete();
 });
 
-test('public invitation accepts a guest name and protects the response from referrer and cache exposure', function () {
-    Guest::factory()->create(['name' => 'Ibu Sari']);
+test('public invitation accepts a guest slug and protects the response from referrer and cache exposure', function () {
+    $guest = Guest::factory()->create(['name' => 'Ibu Sari']);
 
-    $response = $this->get(route('undangan', ['to' => 'Ibu Sari']));
+    $response = $this->get(route('undangan', ['to' => $guest->slug]));
 
     $response->assertOk()
         ->assertHeader('Referrer-Policy', 'no-referrer')
@@ -37,15 +37,15 @@ test('guest share message contains the guest name and personal invitation link',
     expect($guest->getShareMessage())
         ->toContain("Bapak/Ibu/Saudara/i\n*Zainur*")
         ->toContain('Minggu 01 November 2026')
-        ->toContain(route('undangan', ['to' => 'Zainur']))
+        ->toContain(route('undangan', ['to' => $guest->slug]))
         ->not->toContain('preview=')
         ->toEndWith("Hormat kami,\nIsma & Aziz");
 });
 
 test('invitation share metadata uses an optimized cover thumbnail and personal guest name', function () {
-    Guest::factory()->create(['name' => 'Zainur']);
+    $guest = Guest::factory()->create(['name' => 'Zainur']);
 
-    $response = $this->get(route('undangan', ['to' => 'Zainur']));
+    $response = $this->get(route('undangan', ['to' => $guest->slug]));
 
     $response
         ->assertSee('Kepada Yth. Zainur, kami mengundang Anda untuk menghadiri pernikahan Isma &amp; Aziz.', false)
@@ -75,24 +75,23 @@ test('public visitors cannot access guest and RSVP management', function () {
 });
 
 test('invitation treats markup in a guest name as text', function () {
-    $name = '<script>alert(1)</script>';
-    Guest::factory()->create(['name' => $name]);
+    $guest = Guest::factory()->create(['name' => '<script>alert(1)</script>']);
 
-    $this->get(route('undangan', ['to' => $name]))
+    $this->get(route('undangan', ['to' => $guest->slug]))
         ->assertOk()
-        ->assertDontSee($name, false);
+        ->assertDontSee('<script>alert(1)</script>', false);
 
-    $response = $this->get(route('undangan', ['to' => $name]));
-    expect($response->inertiaProps('guestName'))->toBe($name);
+    $response = $this->get(route('undangan', ['to' => $guest->slug]));
+    expect($response->inertiaProps('guestName'))->toBe('<script>alert(1)</script>');
 });
 
 test('invitation treats public wish names and messages as text', function () {
-    Guest::factory()->create(['name' => 'Ibu Sari']);
+    $guest = Guest::factory()->create(['name' => 'Ibu Sari']);
     $name = '<img src=x onerror=alert(1)>';
     $message = '<script>alert(2)</script>';
     Rsvp::factory()->create(['name' => $name, 'message' => $message]);
 
-    $response = $this->get(route('undangan', ['to' => 'Ibu Sari']))->assertOk();
+    $response = $this->get(route('undangan', ['to' => $guest->slug]))->assertOk();
 
     $response->assertDontSee($name, false)->assertDontSee($message, false);
     expect($response->inertiaProps('rsvps.0.name'))->toBe($name);
@@ -104,18 +103,18 @@ test('invitation returns a custom 404 for unknown or missing guests', function (
         ->assertNotFound()
         ->assertInertia(fn ($page) => $page->component('undangan/not-found'));
 
-    $this->get(route('undangan', ['to' => 'Nama Asal']))
+    $this->get(route('undangan', ['to' => 'slug-tidak-ada']))
         ->assertNotFound()
         ->assertHeader('Referrer-Policy', 'no-referrer')
         ->assertHeader('Cache-Control', 'no-store, private')
         ->assertInertia(fn ($page) => $page->component('undangan/not-found'));
 });
 
-test('invitation rejects malformed guest names and does not truncate them into a valid guest', function () {
+test('invitation rejects malformed slugs and does not truncate them into a valid guest', function () {
     Guest::factory()->create(['name' => str_repeat('A', 100)]);
 
     $this->get('/mengundang?to[]=unexpected')->assertNotFound();
-    $this->get(route('undangan', ['to' => str_repeat('A', 150)]))->assertNotFound();
+    $this->get(route('undangan', ['to' => str_repeat('a', 150)]))->assertNotFound();
 });
 
 test('invitation stops working when the registered guest is deleted', function () {
@@ -127,10 +126,24 @@ test('invitation stops working when the registered guest is deleted', function (
 });
 
 test('invitation shows only the latest hundred wishes while counting all wishes', function () {
-    Guest::factory()->create(['name' => 'Ibu Sari']);
+    $guest = Guest::factory()->create(['name' => 'Ibu Sari']);
     Rsvp::factory()->count(101)->create();
 
-    $response = $this->get(route('undangan', ['to' => 'Ibu Sari']))->assertOk();
+    $response = $this->get(route('undangan', ['to' => $guest->slug]))->assertOk();
     expect($response->inertiaProps('rsvpTotal'))->toBe(101);
     expect($response->inertiaProps('rsvps'))->toHaveCount(100);
+});
+
+test('duplicate guest names get unique slugs', function () {
+    $budi1 = Guest::factory()->create(['name' => 'Budi Santoso']);
+    $budi2 = Guest::factory()->create(['name' => 'Budi Santoso']);
+    $budi3 = Guest::factory()->create(['name' => 'Budi Santoso']);
+
+    expect($budi1->slug)->toBe('budi-santoso');
+    expect($budi2->slug)->toBe('budi-santoso-2');
+    expect($budi3->slug)->toBe('budi-santoso-3');
+
+    // Masing-masing URL tetap bisa diakses
+    $this->get(route('undangan', ['to' => $budi1->slug]))->assertOk();
+    $this->get(route('undangan', ['to' => $budi2->slug]))->assertOk();
 });

@@ -12,8 +12,11 @@ class GuestFactory extends Factory
 {
     public function definition(): array
     {
+        $name = fake()->name();
+
         return [
-            'name' => fake()->name(),
+            'name' => $name,
+            // slug akan di-generate otomatis oleh model booted hook
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\GuestFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Guest extends Model
 {
@@ -14,12 +15,36 @@ class Guest extends Model
     /** @var list<string> */
     protected $fillable = [
         'name',
+        'slug',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Guest $guest): void {
+            if (empty($guest->slug)) {
+                $guest->slug = static::generateUniqueSlug($guest->name);
+            }
+        });
+    }
+
+    public static function generateUniqueSlug(string $name): string
+    {
+        $base = Str::slug($name);
+        $slug = $base;
+        $count = 2;
+
+        while (static::query()->where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$count}";
+            $count++;
+        }
+
+        return $slug;
+    }
 
     public function getInvitationUrl(): string
     {
         return route('undangan', [
-            'to' => $this->name,
+            'to' => $this->slug,
         ]);
     }
 

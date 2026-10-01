@@ -12,12 +12,12 @@ class GuestController extends Controller
 {
     public function index(): Response
     {
-        $paginator = Guest::orderByDesc('created_at')
-            ->paginate(10);
+        $paginator = Guest::orderByDesc('created_at')->paginate(10);
 
         $guests = $paginator->through(fn (Guest $guest) => [
             'id' => $guest->id,
             'name' => $guest->name,
+            'slug' => $guest->slug,
             'invitation_url' => $guest->getInvitationUrl(),
             'whatsapp_url' => $guest->getWhatsappShareUrl(),
             'share_message' => $guest->getShareMessage(),

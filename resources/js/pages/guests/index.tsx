@@ -2,6 +2,7 @@ import { Head, useForm } from '@inertiajs/react';
 import {
     Copy,
     Plus,
+    Search,
     Trash2,
     ExternalLink,
     MessageCircle,
@@ -46,6 +47,7 @@ import * as GuestRoutes from '@/routes/guests';
 interface Guest {
     id: number;
     name: string;
+    slug: string;
     invitation_url: string;
     whatsapp_url: string;
     share_message: string;
@@ -112,8 +114,13 @@ export default function GuestsIndex({
 }) {
     const [addOpen, setAddOpen] = useState(false);
     const [copied, setCopied] = useState<number | null>(null);
+    const [search, setSearch] = useState('');
     const deleteForm = useForm({});
     const form = useForm({ name: '' });
+
+    const filteredGuests = guests.data.filter((g) =>
+        g.name.toLowerCase().includes(search.toLowerCase().trim()),
+    );
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
@@ -213,31 +220,52 @@ export default function GuestsIndex({
                 </div>
 
                 <Card className="md:border-border min-w-0 gap-0 overflow-hidden rounded-2xl border-slate-200 p-0 shadow-none md:rounded-md md:shadow-sm">
-                    <CardHeader className="md:bg-muted/20 border-b border-slate-200 bg-white px-4 py-3.5 md:py-3">
-                        <CardTitle className="flex items-center justify-between text-sm font-medium">
-                            <span>Daftar tamu</span>
-                            <span className="text-xs font-normal text-slate-500">
-                                {guests.total} orang
-                            </span>
-                        </CardTitle>
+                    <CardHeader className="md:bg-muted/20 border-b border-slate-200 bg-white px-4 py-3">
+                        {/* Mobile: 2 baris */}
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-slate-700">Daftar tamu</span>
+                                <span className="text-xs text-slate-500 sm:hidden">
+                                    {filteredGuests.length} orang
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="relative flex-1 sm:flex-none">
+                                    <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        id="guest-search"
+                                        type="text"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        placeholder="Cari tamu..."
+                                        className="h-8 w-full pl-8 text-sm sm:w-52"
+                                    />
+                                </div>
+                                <span className="hidden shrink-0 text-xs text-slate-500 sm:block">
+                                    {filteredGuests.length} orang
+                                </span>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className="p-0">
-                        {guests.data.length === 0 ? (
+                        {filteredGuests.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 text-center">
                                 <Users className="text-muted-foreground mb-3 h-10 w-10" />
                                 <h3 className="text-sm font-semibold">
-                                    Belum ada tamu
+                                    {search.trim()
+                                        ? 'Tamu tidak ditemukan'
+                                        : 'Belum ada tamu'}
                                 </h3>
                                 <p className="text-muted-foreground mt-1 max-w-sm text-xs">
-                                    Daftar tamu Anda masih kosong. Klik tombol
-                                    "Tambah Tamu" di atas untuk mulai membuat
-                                    daftar.
+                                    {search.trim()
+                                        ? `Tidak ada tamu dengan nama "${search.trim()}".`
+                                        : 'Daftar tamu Anda masih kosong. Klik tombol "Tambah Tamu" di atas untuk mulai membuat daftar.'}
                                 </p>
                             </div>
                         ) : (
                             <>
                                 <div className="divide-y divide-slate-100 bg-white px-4 md:hidden">
-                                    {guests.data.map((guest, index) => (
+                                    {filteredGuests.map((guest, index) => (
                                         <article
                                             key={guest.id}
                                             className="min-w-0 py-4"
@@ -351,7 +379,7 @@ export default function GuestsIndex({
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {guests.data.map((guest, index) => (
+                                            {filteredGuests.map((guest, index) => (
                                                 <TableRow
                                                     key={guest.id}
                                                     className="h-12"

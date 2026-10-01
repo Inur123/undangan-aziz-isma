@@ -16,22 +16,22 @@ class UndanganController extends Controller
      */
     public function show(Request $request): Response
     {
-        $requestedName = $request->query('to', $request->query('kepada'));
+        $requestedSlug = $request->query('to', $request->query('kepada'));
 
-        if (! is_string($requestedName)
-            || $requestedName === ''
-            || ! mb_check_encoding($requestedName, 'UTF-8')
-            || mb_strlen($requestedName) > 100
-            || preg_match('/[\x00-\x1F\x7F]/u', $requestedName) === 1) {
+        if (! is_string($requestedSlug)
+            || $requestedSlug === ''
+            || ! mb_check_encoding($requestedSlug, 'UTF-8')
+            || mb_strlen($requestedSlug) > 120
+            || preg_match('/[\x00-\x1F\x7F]/u', $requestedSlug) === 1) {
             return $this->notFound($request);
         }
 
         $guest = Guest::query()
-            ->select('name')
-            ->where('name', $requestedName)
+            ->select('name', 'slug')
+            ->where('slug', $requestedSlug)
             ->first();
 
-        if ($guest === null || $guest->name !== $requestedName) {
+        if ($guest === null) {
             return $this->notFound($request);
         }
 
