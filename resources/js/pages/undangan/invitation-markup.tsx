@@ -252,15 +252,16 @@ export function InvitationMarkup({
                             “
                         </span>
                         <p className="eyebrow">Tentang cinta dan perjalanan</p>
-                        <blockquote>
-                            “Bukan sekadar menemukan,
-                            <br />
-                            melainkan saling menjaga.”
+                        <blockquote style={{ fontSize: '20px', lineHeight: '1.5', letterSpacing: '-0.3px', fontWeight: 500, margin: '24px 0' }}>
+                            “Karena pada akhirnya, bukan tentang seberapa cepat kita menemukan seseorang, melainkan tentang bagaimana Tuhan mempertemukan kita pada waktu yang paling tepat.”
                         </blockquote>
-                        <p>
-                            Semoga setiap langkah menjadi ibadah,
-                            <br />
-                            setiap pulang menjadi rumah.
+                        <p style={{ fontSize: '12px', lineHeight: '1.8' }}>
+                            <strong style={{ color: 'var(--inv-ink)', display: 'block', marginBottom: '4px' }}>
+                                2014 → 2025 → 20 September 2026 → 1 November 2026
+                            </strong>
+                            <span style={{ color: 'var(--inv-denim)', fontStyle: 'italic' }}>
+                                Dari teman, menjadi pasangan, lalu menjadi teman hidup.
+                            </span>
                         </p>
                     </div>
                 </section>
@@ -454,7 +455,7 @@ export function InvitationMarkup({
                         >
                             Merayakan kebersamaan
                         </p>
-                        <h3>Resepsi</h3>
+                        <h3>Temu Manten & Resepsi</h3>
                         <p className="time" data-reception-time="">
                             {invitation.receptionTime}
                         </p>
@@ -488,49 +489,78 @@ export function InvitationMarkup({
                     <div className="reveal">
                         <p className="eyebrow">Sepenggal perjalanan</p>
                         <h2 className="section-title" id="story-title">
-                            Cerita <em>kita</em>
+                            Kisah <em>kita</em>
                         </h2>
-                        <p className="body-copy">
-                            Hal-hal sederhana yang membawa
-                            <br />
-                            kami sampai pada hari istimewa.
-                        </p>
                     </div>
                     <div className="timeline">
                         <article className="story-item reveal">
                             <span className="story-year">
-                                2022 · AWAL CERITA
+                                2014 · PERTEMUAN
                             </span>
-                            <h3>Perjumpaan sederhana</h3>
+                            <h3>Pertemuan</h3>
                             <p>
-                                Berawal dari pertemuan yang tak direncanakan,
-                                percakapan kecil tumbuh menjadi alasan untuk
-                                kembali saling menyapa.
+                                Semuanya bermula pada tahun 2014, ketika kami
+                                dipertemukan sebagai teman di masa SMA. Saat
+                                itu, tak pernah terbayangkan bahwa sebuah
+                                pertemanan sederhana akan menjadi awal dari
+                                perjalanan panjang menuju sebuah kisah yang
+                                begitu berarti.
                             </p>
                         </article>
                         <article className="story-item reveal">
                             <span className="story-year">
-                                2025 · SATU TUJUAN
+                                SEBUAH PERJALANAN PANJANG
                             </span>
-                            <h3>Memilih untuk bersama</h3>
+                            <h3>Sebuah perjalanan panjang</h3>
                             <p>
-                                Dalam banyak cerita dan perjalanan, kami belajar
-                                bahwa rumah adalah seseorang yang bersedia
-                                saling mendengarkan.
+                                Waktu terus berjalan, membawa kami melewati
+                                banyak cerita, jarak, dan perjalanan yang tidak
+                                selalu mudah. Namun, barangkali ada doa yang
+                                diam-diam sedang Tuhan persiapkan.
                             </p>
                         </article>
                         <article className="story-item reveal">
                             <span className="story-year">
-                                2026 · LEMBARAN BARU
+                                2025 · PERTEMUAN KEMBALI
                             </span>
-                            <h3>Melangkah selamanya</h3>
+                            <h3>Pertemuan kembali</h3>
                             <p>
-                                Dengan restu keluarga dan niat yang baik, kami
-                                mengikat janji untuk merawat cinta sepanjang
-                                kehidupan.
+                                Setelah perjalanan panjang, pada tahun 2025 kami
+                                kembali dipertemukan. Kali ini dengan hati yang
+                                lebih dewasa dan pandangan yang berbeda. Dari
+                                pertemuan itu, tumbuh sebuah hubungan yang kami
+                                jalani dengan lebih serius, dengan harapan dan
+                                doa untuk melangkah menuju tujuan yang sama.
+                            </p>
+                        </article>
+                        <article className="story-item reveal">
+                            <span className="story-year">
+                                20 SEPTEMBER 2026 · KEYAKINAN DAN PERJANJIAN
+                            </span>
+                            <h3>Keyakinan dan perjanjian</h3>
+                            <p>
+                                Dengan penuh keyakinan dan niat baik, serta
+                                restu dari kedua keluarga pada 20 September 2026
+                                kami mengikat janji dalam pertunangan. Sebagai
+                                langkah serius menuju masa depan bersama.
+                            </p>
+                        </article>
+                        <article className="story-item reveal">
+                            <span className="story-year">
+                                1 NOVEMBER 2026 · MENUJU JANJI SUCI
+                            </span>
+                            <h3>Menuju janji suci</h3>
+                            <p>
+                                Kini, setelah perjalanan yang begitu panjang,
+                                kami sampai pada satu titik yang dahulu mungkin
+                                tak pernah kami bayangkan. Dengan memohon ridha
+                                dan keberkahan Allah SWT, kami akan mengikat
+                                janji suci pernikahan pada{' '}
+                                <strong>1 November 2026</strong>.
                             </p>
                         </article>
                     </div>
+
                 </section>
 
                 <section
@@ -644,13 +674,6 @@ export function InvitationMarkup({
                                     <h3 className="gift-bank" data-gift-bank="">
                                         {account.bank}
                                     </h3>
-                                    <span
-                                        className="gift-example"
-                                        data-gift-example=""
-                                        hidden={!account.isExample}
-                                    >
-                                        CONTOH
-                                    </span>
                                 </div>
                                 <p className="gift-account-label">
                                     Nomor rekening
@@ -679,20 +702,7 @@ export function InvitationMarkup({
                             </article>
                         ))}
                     </div>
-                    <p
-                        className="gift-sample-note"
-                        id="gift-sample-note"
-                        hidden={
-                            !invitation.gifts.some(
-                                (account) => account.isExample,
-                            )
-                        }
-                    >
-                        Rekening di atas masih berupa contoh.
-                        <br />
-                        Ganti dengan rekening pengantin sebelum undangan
-                        digunakan.
-                    </p>
+
                     <p className="gift-end">
                         Terima kasih atas setiap bentuk kasih.
                     </p>

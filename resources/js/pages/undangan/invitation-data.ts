@@ -25,24 +25,17 @@ export const invitation = {
     },
     date: '2026-11-01T08:00:00+07:00',
     end: '2026-11-01T14:00:00+07:00',
-    akadTime: '08.00 – 09.00 WIB',
-    receptionTime: '11.00 – 14.00 WIB',
+    akadTime: '07.00 WIB – Selesai',
+    receptionTime: '09.30 WIB – Selesai',
     venue: 'Kediaman Mempelai Wanita',
     address:
         'Dusun Balibatur RT 003 RW 004, Desa Temboro, Kec. Karas, Kab. Magetan',
     mapsQuery: '-7.59186,111.39450',
     gifts: [
         {
-            bank: 'BCA',
-            number: '0000000000',
-            holder: 'Ismatul Anwaroti, S.Pd',
-            isExample: true,
-        },
-        {
             bank: 'MANDIRI',
-            number: '0000000000000',
-            holder: 'Muhammad Lathifatul Aziz, S.Pd',
-            isExample: true,
+            number: '1870000235940',
+            holder: 'Ismatul Anwaroti',
         },
     ],
 } as const;

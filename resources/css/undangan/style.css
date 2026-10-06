@@ -1118,6 +1118,41 @@ img {
     line-height: 1.85;
 }
 
+.story-quote {
+    margin: 28px 0 0;
+    padding: 16px 20px;
+    border-left: 3px solid var(--inv-denim);
+    border-radius: 0 16px 16px 0;
+    background: var(--inv-denim-pale);
+}
+
+.story-quote p {
+    margin: 0;
+    color: var(--inv-muted);
+    font: italic 12px/1.85 var(--inv-body, sans-serif);
+}
+
+.story-timeline-summary {
+    margin: 22px 0 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--inv-muted);
+}
+
+.story-timeline-summary strong {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--inv-ink);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.story-timeline-summary em {
+    color: var(--inv-denim);
+    font-size: 12px;
+}
+
 /* Gallery */
 .gallery {
     background: #f5f8ff;
